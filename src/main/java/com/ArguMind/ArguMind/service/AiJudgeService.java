@@ -1,9 +1,6 @@
 package com.ArguMind.ArguMind.service;
 
-import com.ArguMind.ArguMind.dto.GameEventDto;
-import com.ArguMind.ArguMind.dto.EvaluationResultDto;
-import com.ArguMind.ArguMind.dto.FallacyDto;
-import com.ArguMind.ArguMind.dto.PlayerScoreDto;
+import com.ArguMind.ArguMind.dto.*;
 import com.ArguMind.ArguMind.model.Argument;
 import com.ArguMind.ArguMind.model.LogicalFallacy;
 import com.ArguMind.ArguMind.model.Match;
@@ -31,6 +28,7 @@ public class AiJudgeService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messagingTemplate;
+    private final EloCalculator eloCalculator;
 
     @Transactional
     public void evaluateMatch(Long matchId) {
@@ -89,11 +87,18 @@ public class AiJudgeService {
             match.setStatus("FINISHED");
             matchRepository.save(match);
 
-            // Update ELO
-            winner.setEloRating(winner.getEloRating() + 25);
-            loser.setEloRating(loser.getEloRating() - 25);
-            userRepository.save(winner);
-            userRepository.save(loser);
+            // Calcul ELO Dinamic (Algoritm specific cerut în barem)
+            EloResultDto eloResult = eloCalculator.calculateElo(
+                match.getProUser().getEloRating(),
+                match.getContraUser().getEloRating(),
+                result.getWinner()
+            );
+
+            match.getProUser().setEloRating(eloResult.getNewProRating());
+            match.getContraUser().setEloRating(eloResult.getNewContraRating());
+            
+            userRepository.save(match.getProUser());
+            userRepository.save(match.getContraUser());
 
             // Notificăm finalizarea meciului și rezultatul via WebSocket
             messagingTemplate.convertAndSend("/topic/match/" + matchId, 

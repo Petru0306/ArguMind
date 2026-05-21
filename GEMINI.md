@@ -68,8 +68,8 @@ Proiectul este aliniat la baremul oficial pentru Secțiunea Web (100 puncte):
 - [x] **Etapa 2: Spring Security & BCrypt**.
 - [x] **Etapa 3: Integrare AI Judge (Mocked logic & DB Sync)**.
 - [x] **Etapa 4: Real-time via WebSockets (Core implementation)**.
-- [ ] **Etapa 5: Rafinare Securitate WebSockets & Validare XSS (Jsoup)**.
-- [ ] **Etapa 6: Algoritm ELO Propriu & Moduri de Joc (Blitz/Standard)**.
+- [x] **Etapa 5: Rafinare Securitate WebSockets & Validare XSS (Jsoup)**.
+- [x] **Etapa 6: Algoritm ELO Propriu & Moduri de Joc (Blitz/Standard)**.
 - [ ] **Etapa 7: Modul de Administrare & i18n (Suport limbi)**.
 - [ ] **Etapa 8: Frontend Brut (Tailwind) + LocalStorage + Text-to-Speech**.
 - [ ] **Etapa 9: Documentație & Optimizări Performanță**.

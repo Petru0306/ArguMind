@@ -33,13 +33,19 @@ class MatchServiceTests {
         String topic = "Is AI dangerous?";
 
         // 2. User1 dă join -> PENDING
-        MatchResponseDto match1 = matchService.joinMatchmaking(new MatchmakingRequestDto(user1.getId(), topic));
+        MatchResponseDto match1 = matchService.joinMatchmaking(MatchmakingRequestDto.builder()
+                .userId(user1.getId())
+                .topic(topic)
+                .build());
         assertEquals("PENDING", match1.getStatus());
         assertEquals(user1.getId(), match1.getProUserId());
         assertNull(match1.getContraUserId());
 
         // 3. User2 dă join -> ACTIVE
-        MatchResponseDto match2 = matchService.joinMatchmaking(new MatchmakingRequestDto(user2.getId(), topic));
+        MatchResponseDto match2 = matchService.joinMatchmaking(MatchmakingRequestDto.builder()
+                .userId(user2.getId())
+                .topic(topic)
+                .build());
         assertEquals("ACTIVE", match2.getStatus());
         assertEquals(user1.getId(), match2.getProUserId());
         assertEquals(user2.getId(), match2.getContraUserId());
@@ -70,8 +76,8 @@ class MatchServiceTests {
         UserRegistrationResponseDto updatedUser1 = userService.getUserById(user1.getId());
         UserRegistrationResponseDto updatedUser2 = userService.getUserById(user2.getId());
 
-        assertEquals(1025, updatedUser1.getEloRating());
-        assertEquals(975, updatedUser2.getEloRating());
-        System.out.println("ELO actualizat: User1 (" + updatedUser1.getEloRating() + "), User2 (" + updatedUser2.getEloRating() + ")");
+        assertEquals(1016, updatedUser1.getEloRating());
+        assertEquals(984, updatedUser2.getEloRating());
+        System.out.println("ELO actualizat dinamic: User1 (" + updatedUser1.getEloRating() + "), User2 (" + updatedUser2.getEloRating() + ")");
     }
 }
