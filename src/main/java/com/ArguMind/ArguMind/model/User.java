@@ -28,4 +28,9 @@ public class User {
     @Column(name = "rank_title")
     @Builder.Default
     private String rankTitle = "NOVICE";
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.USER;
 }

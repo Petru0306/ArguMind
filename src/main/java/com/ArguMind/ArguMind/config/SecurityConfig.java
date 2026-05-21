@@ -24,6 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Dezactivat pentru API (urmează a fi configurat corect)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/api/auth/**", "/static/**", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
