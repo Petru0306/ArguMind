@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+    <main class="py-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                <div>
+                    <h1 class="text-4xl font-heading font-bold text-chai-text" 
+                        th:text="#{dashboard.welcome(${#authentication.name})}">Bine ai venit!</h1>
+                    <p class="text-chai-dark/60 mt-2">Ești gata pentru o nouă rundă de argumente?</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 shadow-md flex items-center gap-6">
+                    <div class="text-center">
+                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rating</span>
+                        <span class="text-2xl font-heading font-bold text-chai-accent">1000</span>
+                    </div>
+                    <div class="w-px h-10 bg-chai-dark/10"></div>
+                    <div class="text-center">
+                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rang</span>
+                        <span class="text-2xl font-heading font-bold text-chai-accent">NOVICE</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- Arena Action -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-chai-dark text-white p-10 rounded-3xl shadow-xl overflow-hidden relative group">
+                        <div class="relative z-10">
+                            <h2 class="text-3xl font-heading font-bold mb-4">Intră în Arenă</h2>
+                            <p class="text-white/80 text-lg mb-8 max-w-md">Ești gata să îți demonstrezi superioritatea logică? Găsește un oponent acum.</p>
+                            <button class="bg-chai-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">
+                                Caută meci
+                            </button>
+                        </div>
+                        <!-- Decorative element -->
+                        <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg">
+                        <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Meciuri Recente</h3>
+                        <div class="text-center py-12 text-chai-dark/40 italic">
+                            Nu ai jucat niciun meci încă.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Stats -->
+                <div class="space-y-8">
+                    <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg">
+                        <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Profil</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between border-b border-chai-dark/5 pb-4">
+                                <span class="text-chai-dark/60">Victorii</span>
+                                <span class="font-bold text-chai-text">0</span>
+                            </div>
+                            <div class="flex justify-between border-b border-chai-dark/5 pb-4">
+                                <span class="text-chai-dark/60">Înfrângeri</span>
+                                <span class="font-bold text-chai-text">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-chai-dark/60">Acuratețe Logică</span>
+                                <span class="font-bold text-chai-accent">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

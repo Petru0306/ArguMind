@@ -21,22 +21,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Dezactivat pentru API (urmează a fi configurat corect)
+            .csrf(csrf -> csrf.disable()) // Dezactivat pentru previzualizare
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/api/auth/**", "/static/**", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() // PERMITE TOT TEMPORAR
             )
-            .formLogin(form -> form
-                .defaultSuccessUrl("/dashboard", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .permitAll()
-            )
-            .httpBasic(Customizer.withDefaults()); // Permite autentificare basic pentru teste/Postman
+            .formLogin(form -> form.disable()) // Dezactivat temporar
+            .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

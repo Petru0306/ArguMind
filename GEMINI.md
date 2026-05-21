@@ -38,18 +38,26 @@ Proiectul este aliniat la baremul oficial pentru Secțiunea Web (100 puncte):
 
 ---
 
-## 5. Fluxul Principal de Joc (The Core Loop)
+## 5. Identitate Vizuală (Branding) - "Spiced Chai"
+Pentru a asigura consistența și originalitatea, proiectul folosește următoarea paletă de culori și reguli de design:
+
+*   **Paletă Culori:**
+    *   `chai-bg`: `#FDFBD4` (Alb crem - Fundal principal)
+    *   `chai-accent`: `#D47E30` (Teracotă/Portocaliu cald - Butoane, highlight)
+    *   `chai-dark`: `#8D5A2B` (Maro mediu - Navbar, headere, carduri)
+    *   `chai-text`: `#825E34` (Maro închis - Text de bază)
+*   **Tipografie (Fonturi):**
+    *   **Titluri:** 'Montserrat', sans-serif
+    *   **Text de bază:** 'Poppins', sans-serif
+*   **Regulă de aur:** Toate paginile trebuie să respecte această paletă. Fonturile trebuie să fie aceleași peste tot.
+
+---
+
+## 6. Fluxul Principal de Joc (The Core Loop)
 1.  **Inițiere:** Matchmaking pe temă + Mod de joc (BLITZ, RAPID, STANDARD).
 2.  **Runde (Turn-based):** 2-3 runde cu timere sincronizate.
 3.  **Evaluare AI:** Procesare asincronă, detectare erori logice.
 4.  **Verdict:** Update ELO, feedback detaliat, salvare în localStorage.
-
----
-
-## 6. Personalități AI Judge
-*   **Socrates:** Strict pe definiții și logică pură.
-*   **Cicero:** Accent pe stil, vocabular și retorică.
-*   **Gordon:** Sarcastic, feedback tăios.
 
 ---
 
@@ -58,6 +66,7 @@ Proiectul este aliniat la baremul oficial pentru Secțiunea Web (100 puncte):
 2. **Arhitectură DTO:** Separare totală Entitate vs API.
 3. **Programare Defensivă:** Validare input (XSS), tratare erori, logare.
 4. **Originalitate:** Implementare algoritmi proprii (ELO) acolo unde baremul cere contribuție proprie.
+5. **Consistență Vizuală:** Respectă cu strictețe paleta "Spiced Chai" și fonturile Montserrat/Poppins în toate fișierele HTML/CSS.
 
 ---
 
@@ -70,6 +79,7 @@ Proiectul este aliniat la baremul oficial pentru Secțiunea Web (100 puncte):
 - [x] **Etapa 4: Real-time via WebSockets (Core implementation)**.
 - [x] **Etapa 5: Rafinare Securitate WebSockets & Validare XSS (Jsoup)**.
 - [x] **Etapa 6: Algoritm ELO Propriu & Moduri de Joc (Blitz/Standard)**.
-- [ ] **Etapa 7: Modul de Administrare & i18n (Suport limbi)**.
-- [ ] **Etapa 8: Frontend Brut (Tailwind) + LocalStorage + Text-to-Speech**.
-- [ ] **Etapa 9: Documentație & Optimizări Performanță**.
+- [x] **Etapa 7: Modul de Administrare & i18n (Suport limbi)**.
+- [ ] **Etapa 8: Frontend Brut (Tailwind) - Landing, Login, Register**.
+- [ ] **Etapa 9: Dashboard & Arena (WebSocket Integration)**.
+- [ ] **Etapa 10: LocalStorage, Text-to-Speech & Optimizări**.
