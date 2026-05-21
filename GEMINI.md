@@ -94,11 +94,11 @@ Când asiști în acest proiect, respectă următoarele reguli:
 - [x] Configurare PostgreSQL (Bază de date: `argumind`, User: `ArguMind`).
 - [x] Implementare Arhitectură Stratificată (`model`, `dto`, `repository`, `service`, `controller`).
 - [x] Implementare Endpoint Înregistrare (`/api/auth/register`).
-- [ ] **Etapa 1: Game State Engine (Backend)**
-    - [ ] Matchmaking logic (Pending -> Active).
-    - [ ] Round control (Submit argument, check turns).
-    - [ ] State: `PROCESSING_AI` transition.
-- [ ] **Etapa 2: Configurare Spring Security & BCrypt**.
+- [x] **Etapa 1: Game State Engine (Backend)**
+    - [x] Matchmaking logic (Pending -> Active).
+    - [x] Round control (Submit argument, check turns).
+    - [x] State: `PROCESSING_AI` transition.
+- [x] **Etapa 2: Configurare Spring Security & BCrypt**.
 - [ ] **Etapa 3: Integrare LLM (Gemini/OpenAI API)**.
 - [ ] **Etapa 4: Real-time via WebSockets**.
 - [ ] **Etapa 5: Frontend (Landing, Dashboard, Arena)**.
