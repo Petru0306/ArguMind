@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layout :: layout(~{::main})}">
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
 <body>
     <main class="py-12 px-4">
         <div class="max-w-7xl mx-auto">
@@ -8,17 +8,17 @@
                 <div>
                     <h1 class="text-4xl font-heading font-bold text-chai-text" 
                         th:text="#{dashboard.welcome(${#authentication.name})}">Bine ai venit!</h1>
-                    <p class="text-chai-dark/60 mt-2">Ești gata pentru o nouă rundă de argumente?</p>
+                    <p class="text-chai-dark/60 mt-2">Ești gata pentru o noua rundă de argumente?</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 shadow-md flex items-center gap-6">
                     <div class="text-center">
                         <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rating</span>
-                        <span class="text-2xl font-heading font-bold text-chai-accent">1000</span>
+                        <span class="text-2xl font-heading font-bold text-chai-accent" th:text="${currentUserElo}">1000</span>
                     </div>
                     <div class="w-px h-10 bg-chai-dark/10"></div>
                     <div class="text-center">
                         <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rang</span>
-                        <span class="text-2xl font-heading font-bold text-chai-accent">NOVICE</span>
+                        <span class="text-2xl font-heading font-bold text-chai-accent" th:text="${currentUserRank}">NOVICE</span>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                         <div class="relative z-10">
                             <h2 class="text-3xl font-heading font-bold mb-4">Intră în Arenă</h2>
                             <p class="text-white/80 text-lg mb-8 max-w-md">Ești gata să îți demonstrezi superioritatea logică? Găsește un oponent acum.</p>
-                            <button class="bg-chai-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">
+                            <button onclick="joinArena()" class="bg-chai-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">
                                 Caută meci
                             </button>
                         </div>
@@ -40,8 +40,27 @@
 
                     <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg">
                         <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Meciuri Recente</h3>
-                        <div class="text-center py-12 text-chai-dark/40 italic">
+                        
+                        <div th:if="${#lists.isEmpty(recentMatches)}" class="text-center py-12 text-chai-dark/40 italic">
                             Nu ai jucat niciun meci încă.
+                        </div>
+
+                        <div th:unless="${#lists.isEmpty(recentMatches)}" class="space-y-4">
+                            <div th:each="m : ${recentMatches}" class="flex items-center justify-between p-4 bg-chai-bg/20 rounded-2xl border border-chai-dark/5 hover:border-chai-accent/30 transition-all group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm"
+                                         th:classappend="${m.winner != null && m.winner.id == currentUserId} ? 'bg-green-500' : 'bg-red-400'">
+                                        <span th:text="${m.winner != null && m.winner.id == currentUserId} ? 'W' : 'L'">W</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-chai-text text-sm group-hover:text-chai-accent transition-colors" th:text="${m.topic}">Tema Meciului</h4>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest text-chai-dark/40" th:text="${m.gameMode}">STANDARD</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <a th:href="@{'/arena/' + ${m.id} + '/results'}" class="text-xs font-bold text-chai-accent hover:underline">Vezi Detalii</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -52,16 +71,16 @@
                         <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Profil</h3>
                         <div class="space-y-4">
                             <div class="flex justify-between border-b border-chai-dark/5 pb-4">
-                                <span class="text-chai-dark/60">Victorii</span>
-                                <span class="font-bold text-chai-text">0</span>
+                                <span class="text-chai-dark/80">Victorii</span>
+                                <span class="font-bold text-chai-text" th:text="${wins}">0</span>
                             </div>
                             <div class="flex justify-between border-b border-chai-dark/5 pb-4">
-                                <span class="text-chai-dark/60">Înfrângeri</span>
-                                <span class="font-bold text-chai-text">0</span>
+                                <span class="text-chai-dark/80">Înfrângeri</span>
+                                <span class="font-bold text-chai-text" th:text="${losses}">0</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-chai-dark/60">Acuratețe Logică</span>
-                                <span class="font-bold text-chai-accent">N/A</span>
+                                <span class="text-chai-dark/80">Acuratețe Logică</span>
+                                <span class="font-bold text-chai-accent" th:text="${logicAccuracy}">N/A</span>
                             </div>
                         </div>
                     </div>
@@ -69,5 +88,29 @@
             </div>
         </div>
     </main>
+
+    <th:block th:fragment="scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const currentUserId = [[${currentUserId}]];
+
+            async function joinArena() {
+                const topic = "Is AI dangerous?"; 
+                const response = await fetch('/api/matches/join', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUserId, topic: topic, gameMode: 'STANDARD' })
+                });
+
+                if (response.ok) {
+                    const match = await response.json();
+                    window.location.href = '/arena/' + match.id;
+                } else {
+                    alert("Eroare la intrarea în matchmaking.");
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
 </body>
 </html>

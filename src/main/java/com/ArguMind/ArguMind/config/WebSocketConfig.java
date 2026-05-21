@@ -22,6 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Endpoint-ul de conexiune. Este protejat automat de Spring Security 
         // deoarece nu a fost adăugat în requestMatchers().permitAll() din SecurityConfig.
         registry.addEndpoint("/ws-arena")
-                .setAllowedOriginPatterns("*");
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 }

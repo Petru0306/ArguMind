@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layout :: layout(~{::main})}">
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
 <body>
     <main class="flex items-center justify-center py-20 px-4">
         <div class="max-w-md w-full bg-white p-10 rounded-3xl border border-chai-dark/10 shadow-xl">

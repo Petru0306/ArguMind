@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ro" th:fragment="main-layout(content, scripts)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArguMind — Gândește Clar</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': '#D47E30',
+                        'text-main': '#825E34',
+                        'bg-main': '#FDFBD4',
+                        'chai-bg': '#FDFBD4',
+                        'chai-accent': '#D47E30',
+                        'chai-dark': '#8D5A2B',
+                        'chai-text': '#825E34'
+                    },
+                    fontFamily: {
+                        heading: ['Montserrat', 'sans-serif'],
+                        body: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    
+    <!-- WebSocket / STOMP Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Liquid Sticky Navbar -->
+    <nav id="main-nav" class="fixed top-0 w-full bg-transparent py-4 z-[1000] transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3 group cursor-pointer" onclick="window.location.href='/'">
+                    <img th:src="@{/images/favicon.png}" alt="ArguMind Logo" class="h-10 w-10 rounded-full transition-transform group-hover:scale-110">
+                    <span class="text-2xl font-heading font-bold tracking-tight text-text-main">ArguMind</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-12">
+                    <!-- Language Selector -->
+                    <div class="flex space-x-4 text-[10px] font-bold tracking-widest uppercase opacity-60">
+                        <a href="?lang=ro" class="hover:text-accent transition-colors">RO</a>
+                        <span class="opacity-40">/</span>
+                        <a href="?lang=en" class="hover:text-accent transition-colors">EN</a>
+                    </div>
+                    
+                    <!-- Auth Links -->
+                    <div sec:authorize="isAnonymous()" class="flex items-center space-x-10">
+                        <a href="/login" th:text="#{auth.login.submit}" class="nav-link-elite">Autentificare</a>
+                        <a href="/register" th:text="#{auth.register.title}" class="bg-accent text-white px-8 py-3 rounded-full text-[10px] uppercase tracking-widest font-bold hover:translate-y-[-2px] hover:shadow-lg hover:shadow-accent/30">Înregistrare</a>
+                    </div>
+                    
+                    <div sec:authorize="isAuthenticated()" class="flex items-center space-x-10">
+                        <a href="/dashboard" class="nav-link-elite">Dashboard</a>
+                        <form th:action="@{/logout}" method="post" class="inline">
+                            <button type="submit" class="text-[10px] uppercase tracking-widest font-bold opacity-60 hover:opacity-100 hover:text-red-600 transition-all">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20">
+        <div th:replace="${content}"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-[#EAE6E1] py-16 mt-32">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-30">&copy; 2026 ArguMind — Proiect dezvoltat pentru InfoEducație.</p>
+        </div>
+    </footer>
+
+    <!-- Global Layout Scripts -->
+    <script>
+        // 1. Cursor Follower Logic
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+        let ringX = 0, ringY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            dotX += (mouseX - dotX) * 0.25;
+            dotY += (mouseY - dotY) * 0.25;
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            dot.style.left = `${dotX}px`;
+            dot.style.top = `${dotY}px`;
+            ring.style.left = `${ringX}px`;
+            ring.style.top = `${ringY}px`;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // 2. Magnetic Effects
+        document.querySelectorAll('a, button, input, .group').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                ring.style.width = '60px';
+                ring.style.height = '60px';
+                ring.style.opacity = '0.4';
+                dot.style.transform = 'translate(-50%, -50%) scale(0)';
+            });
+            el.addEventListener('mouseleave', () => {
+                ring.style.width = '35px';
+                ring.style.height = '35px';
+                ring.style.opacity = '0.15';
+                dot.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+
+        // 3. Navbar Scroll Behavior
+        const nav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-[#FAFAFA]/85', 'backdrop-blur-xl', 'border-b', 'border-[#EAE6E1]', 'py-2');
+                nav.classList.remove('py-4', 'bg-transparent');
+            } else {
+                nav.classList.remove('bg-[#FAFAFA]/85', 'backdrop-blur-xl', 'border-b', 'border-[#EAE6E1]', 'py-2');
+                nav.classList.add('py-4', 'bg-transparent');
+            }
+        });
+    </script>
+
+    <!-- Page Specific Scripts Injection -->
+    <th:block th:if="${scripts != null}" th:replace="${scripts}"></th:block>
+
+</body>
+</html>

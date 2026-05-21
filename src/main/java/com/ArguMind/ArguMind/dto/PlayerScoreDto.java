@@ -15,4 +15,5 @@ public class PlayerScoreDto {
     private Integer evidence;
     private Integer rhetoric;
     private Integer total;
+    private String feedback; // Sfaturi personalizate de la AI
 }

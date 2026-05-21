@@ -25,12 +25,12 @@ class MatchServiceTests {
     private UserService userService;
 
     @Test
-    void testCompleteMatchFlow() {
+    void testCompleteMatchFlow() throws InterruptedException {
         // 1. Înregistrare 2 useri
-        UserRegistrationResponseDto user1 = userService.registerUser(new UserRegistrationDto("user1", "pass1"));
-        UserRegistrationResponseDto user2 = userService.registerUser(new UserRegistrationDto("user2", "pass2"));
+        UserRegistrationResponseDto user1 = userService.registerUser(new UserRegistrationDto("user_test_" + System.currentTimeMillis() + "_1", "pass1"));
+        UserRegistrationResponseDto user2 = userService.registerUser(new UserRegistrationDto("user_test_" + System.currentTimeMillis() + "_2", "pass2"));
 
-        String topic = "Is AI dangerous?";
+        String topic = "Is AI dangerous? " + System.currentTimeMillis();
 
         // 2. User1 dă join -> PENDING
         MatchResponseDto match1 = matchService.joinMatchmaking(MatchmakingRequestDto.builder()
@@ -66,8 +66,16 @@ class MatchServiceTests {
         // Runda 2 - User2 (CONTRA) -> PROCESSING_AI -> FINISHED (via AI)
         matchService.submitArgument(matchId, new ArgumentSubmitDto(user2.getId(), "Second CONTRA argument"));
 
-        // 5. Verificare status final și efecte AI
+        // Așteptăm ca procesarea asincronă AI să se termine (max 10 secunde)
+        int attempts = 0;
         MatchResponseDto finalMatch = matchService.getMatchById(matchId);
+        while (!"FINISHED".equals(finalMatch.getStatus()) && attempts < 10) {
+            Thread.sleep(1000);
+            finalMatch = matchService.getMatchById(matchId);
+            attempts++;
+        }
+
+        // 5. Verificare status final și efecte AI
         assertEquals("FINISHED", finalMatch.getStatus());
         assertNotNull(finalMatch.getWinnerId());
         System.out.println("Meciul s-a terminat. Câștigător ID: " + finalMatch.getWinnerId());

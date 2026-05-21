@@ -80,6 +80,6 @@ Pentru a asigura consistența și originalitatea, proiectul folosește următoar
 - [x] **Etapa 5: Rafinare Securitate WebSockets & Validare XSS (Jsoup)**.
 - [x] **Etapa 6: Algoritm ELO Propriu & Moduri de Joc (Blitz/Standard)**.
 - [x] **Etapa 7: Modul de Administrare & i18n (Suport limbi)**.
-- [ ] **Etapa 8: Frontend Brut (Tailwind) - Landing, Login, Register**.
-- [ ] **Etapa 9: Dashboard & Arena (WebSocket Integration)**.
+- [x] **Etapa 8: Frontend Brut (Tailwind) - Landing, Login, Register**.
+- [x] **Etapa 9: Dashboard & Arena (WebSocket Integration)**.
 - [ ] **Etapa 10: LocalStorage, Text-to-Speech & Optimizări**.

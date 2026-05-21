@@ -38,4 +38,25 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "winner_id")
     private User winner;
+
+    // Scoruri PRO
+    private Integer proLogicScore;
+    private Integer proClarityScore;
+    private Integer proRhetoricScore;
+    private Integer proEvidenceScore;
+
+    // Scoruri CONTRA
+    private Integer contraLogicScore;
+    private Integer contraClarityScore;
+    private Integer contraRhetoricScore;
+    private Integer contraEvidenceScore;
+
+    private Integer proEloChange;
+    private Integer contraEloChange;
+
+    @Column(columnDefinition = "TEXT")
+    private String proFeedback;
+
+    @Column(columnDefinition = "TEXT")
+    private String contraFeedback;
 }

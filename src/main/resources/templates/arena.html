@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
+<body>
+    <main class="py-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header Arena -->
+            <div class="bg-white p-6 rounded-3xl border border-chai-dark/10 shadow-lg mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-chai-accent text-white p-3 rounded-2xl shadow-lg shadow-chai-accent/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-heading font-bold text-chai-text" th:text="${match.topic}">Tema de Dezbatere</h2>
+                        <div class="flex gap-4 mt-1">
+                            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50 flex items-center gap-1">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                <span th:text="${match.gameMode}">STANDARD</span>
+                            </span>
+                            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50" id="match-status">
+                                Runda <span th:text="${match.roundNumber}">1</span> / 2
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Global Timers -->
+                <div class="flex gap-6">
+                    <div class="text-center">
+                        <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1">Timp PRO</span>
+                        <div id="timer-pro" class="text-3xl font-heading font-bold text-chai-text bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5">00:00</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1">Timp CONTRA</span>
+                        <div id="timer-contra" class="text-3xl font-heading font-bold text-chai-text bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5 opacity-50">00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Split Arena -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
+                
+                <!-- PRO SIDE -->
+                <div id="panel-pro" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all duration-500">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">P</div>
+                            <span id="label-pro" class="font-heading font-bold text-chai-text">Jucător PRO</span>
+                        </div>
+                        <span id="typing-pro" class="text-xs italic text-chai-accent hidden animate-bounce">Scrie...</span>
+                    </div>
+                    
+                    <textarea id="text-pro" 
+                              class="w-full h-64 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 focus:border-chai-accent focus:ring-4 focus:ring-chai-accent/5 outline-none transition-all resize-none text-lg leading-relaxed placeholder:text-chai-dark/20"
+                              placeholder="Introdu argumentul tău aici..." disabled></textarea>
+                    
+                    <button id="btn-submit-pro" class="mt-6 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold text-lg hover:brightness-110 disabled:grayscale disabled:opacity-50 transition-all shadow-lg shadow-chai-accent/20 hidden">
+                        Trimite Argument PRO
+                    </button>
+                </div>
+
+                <!-- VS Divider (Desktop Only) -->
+                <div class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-chai-dark text-white rounded-full items-center justify-center font-heading font-black text-2xl border-4 border-chai-bg z-20 shadow-xl">
+                    VS
+                </div>
+
+                <!-- CONTRA SIDE -->
+                <div id="panel-contra" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all duration-500 opacity-50">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">C</div>
+                            <span id="label-contra" class="font-heading font-bold text-chai-text">Jucător CONTRA</span>
+                        </div>
+                        <span id="typing-contra" class="text-xs italic text-chai-accent hidden animate-bounce">Scrie...</span>
+                    </div>
+
+                    <textarea id="text-contra" 
+                              class="w-full h-64 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 focus:border-chai-accent focus:ring-4 focus:ring-chai-accent/5 outline-none transition-all resize-none text-lg leading-relaxed placeholder:text-chai-dark/20"
+                              placeholder="Așteaptă rândul tău..." disabled></textarea>
+
+                    <button id="btn-submit-contra" class="mt-6 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold text-lg hover:brightness-110 disabled:grayscale disabled:opacity-50 transition-all shadow-lg shadow-chai-accent/20 hidden">
+                        Trimite Argument CONTRA
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI processing Overlay -->
+            <div id="ai-overlay" class="fixed inset-0 bg-chai-dark/95 z-50 flex items-center justify-center flex-col text-white hidden backdrop-blur-md">
+                <div class="relative w-40 h-40 mb-10">
+                    <div class="absolute inset-0 border-8 border-white/10 rounded-full"></div>
+                    <div class="absolute inset-0 border-8 border-t-chai-accent rounded-full animate-spin"></div>
+                </div>
+                <h2 class="text-4xl font-heading font-bold mb-4">Arbitrul AI analizează logica meciului...</h2>
+                <p class="text-white/70 text-xl font-body">Se caută erori logice și se calculează noul tău ELO.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <th:block th:fragment="scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            // Facem variabilele globale pentru debugging
+            window.matchId = [[${match.id}]];
+            window.currentUserId = [[${currentUserId}]];
+            window.proUserId = [[${match.proUserId}]];
+            window.contraUserId = [[${match.contraUserId}]];
+            const initialTurnTime = [[${match.initialTime}]];
+            
+            let stompClient = null;
+            window.currentTurn = [[${match.currentTurn}]]; 
+            window.roundNumber = [[${match.roundNumber}]];
+            let timerInterval = null;
+            let timeLeft = initialTurnTime;
+            let typingTimeout = null;
+
+            function connect() {
+                console.log("Arena Init - IDs:", { current: window.currentUserId, pro: window.proUserId, contra: window.contraUserId });
+
+                // Identificare rol IMEDIATĂ
+                if (window.currentUserId === window.proUserId) {
+                    document.getElementById('label-pro').innerText = "TU (PRO)";
+                } else if (window.currentUserId === window.contraUserId) {
+                    document.getElementById('label-contra').innerText = "TU (CONTRA)";
+                }
+
+                updateTurnUI(); 
+                startTimer();
+
+                const socket = new SockJS('/ws-arena');
+                stompClient = Stomp.over(socket);
+
+                stompClient.connect({}, function (frame) {
+                    console.log('Conectat la WebSocket');
+                    stompClient.subscribe('/topic/match/' + window.matchId, function (event) {
+                        handleGameEvent(JSON.parse(event.body));
+                    });
+                }, function(error) {
+                    console.error('Eroare conexiune WebSocket:', error);
+                });
+            }
+
+            function handleGameEvent(event) {
+                console.log("Eveniment:", event.type, event);
+                switch(event.type) {
+                    case 'START':
+                        window.currentTurn = 'PRO';
+                        window.roundNumber = 1;
+                        updateTurnUI();
+                        resetTimer();
+                        break;
+                    case 'TURN_CHANGE':
+                        window.currentTurn = event.payload.currentTurn;
+                        window.roundNumber = event.payload.roundNumber;
+                        document.getElementById('match-status').innerText = `Runda ${window.roundNumber} / 2`;
+                        updateTurnUI();
+                        resetTimer();
+                        break;
+                    case 'TYPING':
+                        showTyping(event.senderUsername);
+                        break;
+                    case 'PROCESSING_AI':
+                        window.currentTurn = event.payload.currentTurn;
+                        document.getElementById('ai-overlay').classList.remove('hidden');
+                        stopTimer();
+                        break;
+                    case 'FINISHED':
+                        console.log("Meci finalizat. Redirecționare...");
+                        // Redirecționare imediată către pagina de rezultate
+                        window.location.href = '/arena/' + window.matchId + '/results';
+                        break;
+                }
+            }
+
+            function updateTurnUI() {
+                const isMyTurn = (window.currentTurn === 'PRO' && window.currentUserId === window.proUserId) || 
+                                 (window.currentTurn === 'CONTRA' && window.currentUserId === window.contraUserId);
+                
+                const activeSide = window.currentTurn.toLowerCase();
+                const inactiveSide = activeSide === 'pro' ? 'contra' : 'pro';
+                
+                console.log("Updating UI for turn:", window.currentTurn, "Is my turn:", isMyTurn);
+
+                // Reset UI for both sides
+                ['pro', 'contra'].forEach(side => {
+                    const textEl = document.getElementById('text-' + side);
+                    const btnEl = document.getElementById('btn-submit-' + side);
+                    const panelEl = document.getElementById('panel-' + side);
+                    const timerEl = document.getElementById('timer-' + side);
+
+                    textEl.disabled = true;
+                    btnEl.classList.add('hidden');
+                    btnEl.disabled = false; // Reset disabled state (the grey button fix)
+                    btnEl.innerText = "Trimite Argument " + side.toUpperCase();
+                    panelEl.classList.add('opacity-50');
+                    timerEl.classList.add('opacity-50');
+                });
+
+                // Activate current side panel and timer
+                document.getElementById('panel-' + activeSide).classList.remove('opacity-50');
+                document.getElementById('timer-' + activeSide).classList.remove('opacity-50');
+                
+                const activeText = document.getElementById('text-' + activeSide);
+                const activeBtn = document.getElementById('btn-submit-' + activeSide);
+
+                if (isMyTurn) {
+                    activeText.disabled = false;
+                    activeText.placeholder = "Introdu argumentul tău aici...";
+                    activeBtn.classList.remove('hidden');
+                    activeBtn.disabled = false;
+                    
+                    activeText.oninput = () => {
+                        sendTyping();
+                    };
+                } else {
+                    activeText.placeholder = "Așteaptă rândul oponentului...";
+                    activeText.oninput = null;
+                }
+            }
+
+            function sendTyping() {
+                if (stompClient && stompClient.connected) {
+                    stompClient.send("/app/match/" + window.matchId + "/action", {}, JSON.stringify({
+                        type: 'TYPING',
+                        payload: 'Typing...'
+                    }));
+                }
+            }
+
+            function showTyping(username) {
+                // Nu afișăm pentru noi înșine
+                if (username === [[${currentUsername}]]) return;
+                
+                const side = window.currentTurn.toLowerCase();
+                const el = document.getElementById('typing-' + side);
+                el.classList.remove('hidden');
+                
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    el.classList.add('hidden');
+                }, 2000);
+            }
+
+            function submitArgument() {
+                const side = window.currentTurn.toLowerCase();
+                const text = document.getElementById('text-' + side).value;
+
+                if (!text.trim()) return;
+
+                if (stompClient && stompClient.connected) {
+                    stompClient.send("/app/match/" + window.matchId + "/action", {}, JSON.stringify({
+                        type: 'SUBMIT',
+                        payload: text
+                    }));
+                    document.getElementById('text-' + side).value = '';
+                    document.getElementById('btn-submit-' + side).disabled = true;
+                    document.getElementById('btn-submit-' + side).innerText = "Se trimite...";
+                }
+            }
+
+            // Timer Logic
+            function startTimer() {
+                stopTimer();
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        stopTimer();
+                        // Opțional: auto-submit? 
+                    }
+                }, 1000);
+            }
+
+            function stopTimer() {
+                if (timerInterval) clearInterval(timerInterval);
+            }
+
+            function resetTimer() {
+                timeLeft = initialTurnTime;
+                updateTimerDisplay();
+                startTimer();
+            }
+
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const activeSide = window.currentTurn.toLowerCase();
+                document.getElementById('timer-' + activeSide).innerText = timeStr;
+                
+                // Reset the other timer to static 00:00 or current state
+                const inactiveSide = activeSide === 'pro' ? 'contra' : 'pro';
+                document.getElementById('timer-' + inactiveSide).innerText = "00:00";
+            }
+
+            // Bind events
+            document.getElementById('btn-submit-pro').onclick = submitArgument;
+            document.getElementById('btn-submit-contra').onclick = submitArgument;
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', connect);
+            } else {
+                connect();
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+</html>

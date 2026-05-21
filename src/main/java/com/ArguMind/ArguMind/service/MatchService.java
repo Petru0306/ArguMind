@@ -9,11 +9,13 @@ import com.ArguMind.ArguMind.repository.ArgumentRepository;
 import com.ArguMind.ArguMind.repository.MatchRepository;
 import com.ArguMind.ArguMind.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,38 +26,59 @@ public class MatchService {
     private final ArgumentRepository argumentRepository;
     private final AiJudgeService aiJudgeService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ApplicationEventPublisher eventPublisher;
+    private final java.util.concurrent.locks.ReentrantLock matchmakingLock = new java.util.concurrent.locks.ReentrantLock();
 
     @Transactional
     public MatchResponseDto joinMatchmaking(MatchmakingRequestDto request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        matchmakingLock.lock();
+        try {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Caută un meci PENDING pe aceeași temă
-        return matchRepository.findFirstByTopicAndStatus(request.getTopic(), "PENDING")
-                .map(match -> {
-                    // Dacă userul curent e deja proUser, nu poate intra tot el ca contraUser
-                    if (match.getProUser().getId().equals(user.getId())) {
-                        return mapToResponseDto(match);
-                    }
-                    match.setContraUser(user);
-                    match.setStatus("ACTIVE");
-                    Match savedMatch = matchRepository.save(match);
-                    
-                    // Notificăm startul meciului via WebSocket (trimitem DTO-ul complet)
-                    notifyMatchUpdate(savedMatch.getId(), GameEventDto.EventType.START, mapToResponseDto(savedMatch));
-                    
-                    return mapToResponseDto(savedMatch);
-                })
-                .orElseGet(() -> {
-                    // Dacă nu există, creează unul nou
-                    Match newMatch = Match.builder()
-                            .topic(request.getTopic())
-                            .gameMode(request.getGameMode() != null ? request.getGameMode() : GameMode.STANDARD)
-                            .proUser(user)
-                            .status("PENDING")
-                            .build();
-                    return mapToResponseDto(matchRepository.save(newMatch));
-                });
+            // 1. Verificăm dacă userul are deja un meci PENDING sau ACTIVE pentru reconectare
+            Optional<Match> ongoingMatch = matchRepository.findOngoingMatchForUser(user.getId());
+            if (ongoingMatch.isPresent()) {
+                return mapToResponseDto(ongoingMatch.get());
+            }
+
+            // 2. Caută orice meci PENDING global (nu ne mai pasă strict de temă la matchmaking general)
+            // Ignorăm meciurile mai vechi de 1 oră (stale matches)
+            return matchRepository.findFirstByStatusOrderByIdAsc("PENDING")
+                    .map(match -> {
+                        if (match.getProUser().getId().equals(user.getId())) {
+                            return mapToResponseDto(match);
+                        }
+                        match.setContraUser(user);
+                        match.setStatus("ACTIVE");
+                        Match savedMatch = matchRepository.save(match);
+                        
+                        // Notificăm startul meciului via WebSocket DUPĂ COMMIT
+                        MatchResponseDto response = mapToResponseDto(savedMatch);
+                        org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                            new org.springframework.transaction.support.TransactionSynchronization() {
+                                @Override
+                                public void afterCommit() {
+                                    notifyMatchUpdate(savedMatch.getId(), GameEventDto.EventType.START, response);
+                                }
+                            }
+                        );
+                        
+                        return response;
+                    })
+                    .orElseGet(() -> {
+                        // 3. Dacă nu există, creează unul nou
+                        Match newMatch = Match.builder()
+                                .topic(request.getTopic() != null ? request.getTopic() : "Inteligența Artificială vs Umanitate")
+                                .gameMode(request.getGameMode() != null ? request.getGameMode() : GameMode.STANDARD)
+                                .proUser(user)
+                                .status("PENDING")
+                                .build();
+                        return mapToResponseDto(matchRepository.save(newMatch));
+                    });
+        } finally {
+            matchmakingLock.unlock();
+        }
     }
 
     @Transactional
@@ -64,7 +87,7 @@ public class MatchService {
                 .orElseThrow(() -> new RuntimeException("Match not found"));
 
         if (!"ACTIVE".equals(match.getStatus())) {
-            throw new RuntimeException("Match is not active");
+            throw new RuntimeException("Meciul nu este activ. Status curent: " + match.getStatus());
         }
 
         User user = userRepository.findById(submitDto.getUserId())
@@ -75,7 +98,7 @@ public class MatchService {
         boolean isContra = match.getContraUser() != null && match.getContraUser().getId().equals(user.getId());
 
         if (!isPro && !isContra) {
-            throw new RuntimeException("User is not part of this match");
+            throw new RuntimeException("User " + user.getUsername() + " is not part of this match");
         }
 
         // Determină rândul
@@ -104,20 +127,42 @@ public class MatchService {
 
         argumentRepository.save(argument);
 
-        // Notificăm trimiterea argumentului și schimbarea de rând
-        notifyMatchUpdate(matchId, GameEventDto.EventType.TURN_CHANGE, "Turn changed!");
-
-        // Dacă s-au trimis 4 argumente (2 runde complete), trecem la PROCESSING_AI
+        // Notificări asincrone după commit
+        final MatchResponseDto response = mapToResponseDto(match);
         if (argCount + 1 >= 4) {
             match.setStatus("PROCESSING_AI");
             matchRepository.save(match);
             
-            // Notificăm trecerea la AI
-            notifyMatchUpdate(matchId, GameEventDto.EventType.PROCESSING_AI, "AI is judging...");
-            
-            // Declanșăm evaluarea AI
-            aiJudgeService.evaluateMatch(matchId);
+            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                new org.springframework.transaction.support.TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        notifyMatchUpdate(matchId, GameEventDto.EventType.PROCESSING_AI, response);
+                        eventPublisher.publishEvent(new MatchFinishedEvent(matchId));
+                    }
+                }
+            );
+        } else {
+            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                new org.springframework.transaction.support.TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        notifyMatchUpdate(matchId, GameEventDto.EventType.TURN_CHANGE, response);
+                    }
+                }
+            );
         }
+    }
+
+    @Transactional
+    public void processArgumentFromWebSocket(Long matchId, String username, String textContent) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        submitArgument(matchId, ArgumentSubmitDto.builder()
+                .userId(user.getId())
+                .textContent(textContent)
+                .build());
     }
 
     private void notifyMatchUpdate(Long matchId, GameEventDto.EventType type, Object payload) {
@@ -136,6 +181,20 @@ public class MatchService {
     }
 
     private MatchResponseDto mapToResponseDto(Match match) {
+        List<Argument> arguments = argumentRepository.findByMatchIdOrderByRoundNumberAsc(match.getId());
+        int argCount = arguments.size();
+        
+        String currentTurn;
+        int roundNumber;
+
+        if ("PROCESSING_AI".equals(match.getStatus()) || "FINISHED".equals(match.getStatus())) {
+            currentTurn = "NONE";
+            roundNumber = 2; // Cap la 2 runde
+        } else {
+            currentTurn = (argCount % 2 == 0) ? "PRO" : "CONTRA";
+            roundNumber = Math.min((argCount / 2) + 1, 2);
+        }
+
         return MatchResponseDto.builder()
                 .id(match.getId())
                 .topic(match.getTopic())
@@ -145,6 +204,20 @@ public class MatchService {
                 .proUserId(match.getProUser().getId())
                 .contraUserId(match.getContraUser() != null ? match.getContraUser().getId() : null)
                 .winnerId(match.getWinner() != null ? match.getWinner().getId() : null)
+                .currentTurn(currentTurn)
+                .roundNumber(roundNumber)
+                .proLogicScore(match.getProLogicScore())
+                .proClarityScore(match.getProClarityScore())
+                .proRhetoricScore(match.getProRhetoricScore())
+                .proEvidenceScore(match.getProEvidenceScore())
+                .contraLogicScore(match.getContraLogicScore())
+                .contraClarityScore(match.getContraClarityScore())
+                .contraRhetoricScore(match.getContraRhetoricScore())
+                .contraEvidenceScore(match.getContraEvidenceScore())
+                .proEloChange(match.getProEloChange())
+                .contraEloChange(match.getContraEloChange())
+                .proFeedback(match.getProFeedback())
+                .contraFeedback(match.getContraFeedback())
                 .build();
     }
 }

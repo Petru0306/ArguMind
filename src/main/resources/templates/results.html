@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
+<body>
+    <main class="py-12 px-4 bg-chai-bg min-h-screen">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Rezultat Header -->
+            <div class="bg-white p-10 rounded-[3rem] shadow-2xl border-2 border-chai-dark/10 mb-12 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-chai-accent"></div>
+                <div class="w-20 h-20 bg-chai-accent text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-chai-accent/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h1 class="text-5xl font-heading font-black text-chai-text mb-4">Verdictul Arbitrului AI</h1>
+                <p class="text-xl text-chai-dark/80 font-body max-w-2xl mx-auto">Analiza este gata. AI-ul a evaluat logică, retorica și claritatea fiecărui argument pentru a stabili câștigătorul.</p>
+            </div>
+
+            <!-- Main Results Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+
+                <!-- Player PRO Stats -->
+                <div class="lg:col-span-1 bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/5 shadow-xl"
+                     th:classappend="${match.proUserId == currentUserId} ? 'ring-4 ring-chai-accent/20' : 'opacity-90'">
+                    <div class="flex items-center gap-4 mb-8 border-b border-chai-dark/10 pb-6">
+                        <div class="w-14 h-14 bg-chai-dark text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">P</div>
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-chai-text leading-tight" 
+                                th:text="${match.proUserId == currentUserId ? 'TU (PRO)' : 'Jucător PRO'}">Jucător PRO</h3>
+                            <span class="text-xs font-bold uppercase tracking-widest text-chai-accent">Analiză Detaliată</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- AI Feedback PRO -->
+                        <div th:if="${match.proFeedback != null}" class="p-4 bg-chai-bg/50 rounded-2xl border border-chai-dark/5 mb-4 italic text-sm text-chai-text">
+                            <span class="font-bold block mb-1">Sfatul Arbitrului:</span>
+                            <p th:text="${match.proFeedback}"></p>
+                        </div>
+
+                        <div th:if="${match.proLogicScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Logică & Structură</span>
+                                <span class="font-black text-chai-accent" th:text="${match.proLogicScore} + '/10'">8/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.proLogicScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                        <div th:if="${match.proClarityScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Claritate & Retorică</span>
+                                <span class="font-black text-chai-accent" th:text="${match.proClarityScore} + '/10'">7/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.proClarityScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                        <div th:if="${match.proEvidenceScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Dovezi & Exemple</span>
+                                <span class="font-black text-chai-accent" th:text="${match.proEvidenceScore} + '/10'">9/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.proEvidenceScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Central Winner Panel -->
+                <div class="lg:col-span-1 flex flex-col gap-8">
+                    <div class="bg-chai-dark p-8 rounded-[2.5rem] shadow-2xl text-center text-white flex-1 flex flex-col justify-center items-center relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+                        <span class="text-xs font-bold uppercase tracking-[0.3em] text-white/50 mb-4">Câștigător Meci</span>
+                        <div class="text-6xl font-heading font-black mb-4 drop-shadow-lg" 
+                             th:text="${match.winnerId == match.proUserId ? 'PRO' : 'CONTRA'}">PRO</div>
+                        <div class="h-1 w-20 bg-chai-accent mb-6"></div>
+                        <p class="text-white/70 font-body px-4 italic leading-tight">
+                            "Verdictul AI-ului a fost stabilit pe baza consistenței dovezilor și clarității argumentării."
+                        </p>
+                    </div>
+
+                    <!-- ELO Change Box -->
+                    <div class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/5 shadow-xl text-center">
+                        <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/40 block mb-2">Rating ELO Nou</span>
+                        <div class="text-4xl font-heading font-black text-chai-text">
+                            <span th:with="userIsPro=${match.proUserId == currentUserId}, 
+                                           change=${userIsPro ? match.proEloChange : match.contraEloChange}">
+                                <span th:text="${change != null && change >= 0 ? '+' : ''}"></span>
+                                <span th:text="${change != null ? change : 0}">0</span>
+                            </span>
+                            <span class="text-sm text-chai-accent font-bold">PTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player CONTRA Stats -->
+                <div class="lg:col-span-1 bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/5 shadow-xl"
+                     th:classappend="${match.contraUserId == currentUserId} ? 'ring-4 ring-chai-accent/20' : 'opacity-90'">
+                    <div class="flex items-center gap-4 mb-8 border-b border-chai-dark/10 pb-6">
+                        <div class="w-14 h-14 bg-chai-dark text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">C</div>
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-chai-text leading-tight"
+                                th:text="${match.contraUserId == currentUserId ? 'TU (CONTRA)' : 'Jucător CONTRA'}">Jucător CONTRA</h3>
+                            <span class="text-xs font-bold uppercase tracking-widest text-chai-accent">Analiză Detaliată</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- AI Feedback CONTRA -->
+                        <div th:if="${match.contraFeedback != null}" class="p-4 bg-chai-bg/50 rounded-2xl border border-chai-dark/5 mb-4 italic text-sm text-chai-text">
+                            <span class="font-bold block mb-1">Sfatul Arbitrului:</span>
+                            <p th:text="${match.contraFeedback}"></p>
+                        </div>
+
+                        <div th:if="${match.contraLogicScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Logică & Structură</span>
+                                <span class="font-black text-chai-accent" th:text="${match.contraLogicScore} + '/10'">6/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.contraLogicScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                        <div th:if="${match.contraClarityScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Claritate & Retorică</span>
+                                <span class="font-black text-chai-accent" th:text="${match.contraClarityScore} + '/10'">8/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.contraClarityScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                        <div th:if="${match.contraEvidenceScore != null}">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-chai-text/70 text-sm uppercase">Dovezi & Exemple</span>
+                                <span class="font-black text-chai-accent" th:text="${match.contraEvidenceScore} + '/10'">5/10</span>
+                            </div>
+                            <div class="w-full bg-chai-bg rounded-full h-3">
+                                <div class="bg-chai-accent h-3 rounded-full shadow-sm" th:style="'width: ' + (${match.contraEvidenceScore} * 10) + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Fallacies Section -->
+            <div th:if="${not #lists.isEmpty(fallacies)}" class="bg-white p-10 rounded-[3rem] shadow-xl border-2 border-chai-dark/5 mb-12">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="p-3 bg-red-100 text-red-600 rounded-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-heading font-black text-chai-text">Erori Logice Detectate</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div th:each="f : ${fallacies}" class="p-6 bg-red-50 border-l-8 border-red-500 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase" th:text="${f.player}">CONTRA</span>
+                                <h4 class="font-black text-red-900" th:text="${f.fallacyName}">Ad Hominem</h4>
+                            </div>
+                            <p class="text-red-800/80 text-sm">
+                                <span th:text="'&quot;' + ${f.offendingText} + '&quot;'">"Citat argument"</span>
+                            </p>
+                        </div>
+                        <div class="bg-white px-4 py-2 rounded-xl border border-red-200 text-xs text-red-900 font-body italic max-w-xs" th:text="${f.explanation}">
+                            Explicația erorii logice.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col md:flex-row gap-6 justify-center pb-12">
+                <a href="/dashboard" class="bg-chai-dark text-white px-10 py-5 rounded-[2rem] font-black text-lg hover:scale-105 transition-all shadow-xl shadow-chai-dark/20 flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    Dashboard
+                </a>
+                <button onclick="window.print()" class="bg-white text-chai-dark border-2 border-chai-dark/10 px-10 py-5 rounded-[2rem] font-black text-lg hover:bg-chai-bg transition-all flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                    </svg>
+                    Descarcă Raport PDF
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <th:block th:fragment="scripts">
+        <script>
+            console.log("Rezultate încărcate cu succes.");
+        </script>
+    </th:block>
+</body>
+</html>

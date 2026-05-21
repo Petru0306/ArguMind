@@ -1,6 +1,8 @@
 package com.ArguMind.ArguMind.controller;
 
+import com.ArguMind.ArguMind.dto.ArgumentSubmitDto;
 import com.ArguMind.ArguMind.dto.GameEventDto;
+import com.ArguMind.ArguMind.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -15,25 +17,31 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class LiveArenaController {
 
+    private final MatchService matchService;
+    private final org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate;
+
     /**
      * Gestionează acțiunile jucătorilor în arenă (ex: typing, submission).
-     * Include logică de programare defensivă pentru prevenirea atacurilor XSS.
+     * Am eliminat @SendTo pentru a preveni Race Condition între SUBMIT și TURN_CHANGE.
      */
     @MessageMapping("/match/{matchId}/action")
-    @SendTo("/topic/match/{matchId}")
-    public GameEventDto handlePlayerAction(@DestinationVariable Long matchId, 
-                                           GameEventDto event, 
-                                           Principal principal) {
+    public void handlePlayerAction(@DestinationVariable Long matchId, 
+                                   GameEventDto event, 
+                                   Principal principal) {
         
-        // Securitate: Atribuim automat sender-ul din Principal (userul logat)
         event.setSenderUsername(principal.getName());
 
-        // Programare Defensivă: Curățăm payload-ul de eventuale scripturi malicioase (XSS)
         if (event.getPayload() instanceof String text) {
             String cleanText = Jsoup.clean(text, Safelist.none());
             event.setPayload(cleanText);
-        }
 
-        return event;
+            if (event.getType() == GameEventDto.EventType.SUBMIT) {
+                // MatchService va face broadcast la TURN_CHANGE sau PROCESSING_AI
+                matchService.processArgumentFromWebSocket(matchId, principal.getName(), cleanText);
+            } else if (event.getType() == GameEventDto.EventType.TYPING) {
+                // Pentru TYPING facem broadcast manual
+                messagingTemplate.convertAndSend("/topic/match/" + matchId, event);
+            }
+        }
     }
 }

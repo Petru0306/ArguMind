@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layout :: layout(~{::main})}">
-<body>
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
+<body class="overflow-hidden"> <!-- Prevent scroll during splash -->
     <main>
+        <!-- Premium Cinematic Splash Screen -->
+        <div id="splash-screen" class="fixed inset-0 z-[9999] bg-[#FAFAFA] flex flex-col items-center justify-center overflow-hidden">
+            <div id="splash-content" class="text-center">
+                <!-- Icon Reveal -->
+                <div id="splash-logo" class="mb-8 opacity-0 transform scale-[0.9] transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
+                    <img th:src="@{/images/favicon.png}" alt="Logo" class="w-24 h-24 rounded-full mx-auto shadow-2xl shadow-accent/20">
+                </div>
+                <!-- Kinetic Typography -->
+                <div class="overflow-hidden mb-2">
+                    <h1 id="splash-title" class="text-4xl font-heading font-bold tracking-tighter text-text-main transform translate-y-full opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" th:text="#{landing.title}">
+                        ArguMind
+                    </h1>
+                </div>
+                <div class="overflow-hidden">
+                    <p id="splash-slogan" class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold transform translate-y-full opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" th:text="#{landing.slogan}">
+                        Arta de a convinge
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Hero Section -->
-        <section class="py-20 px-4 text-center">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-5xl md:text-6xl font-heading font-bold text-chai-text mb-6">
-                    ArguMind
+        <section class="min-h-screen flex items-center justify-center pt-20 px-4 overflow-hidden">
+            <div class="max-w-5xl mx-auto text-center">
+                <div class="mb-6 overflow-hidden">
+                    <span class="block text-[10px] uppercase tracking-[0.6em] text-accent font-bold opacity-0 animate-[fadeIn_1s_ease_0.2s_forwards]" 
+                          th:text="#{landing.title}">ARGUMIND</span>
+                </div>
+                <h1 class="text-6xl md:text-8xl font-heading font-bold mb-10 leading-[1.05] reveal-text">
+                    <span id="slogan-container" class="block" th:attr="data-text=#{landing.slogan}"></span>
                 </h1>
-                <p class="text-xl md:text-2xl text-chai-dark font-light mb-10 leading-relaxed">
-                    Locul în care nu câștigă cine țipă mai tare,<br/>
-                    <span class="font-semibold italic">ci cine gândește mai clar.</span>
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="/login" class="bg-chai-accent text-white px-8 py-4 rounded-xl text-lg font-bold hover:scale-105 hover:shadow-xl transition-all shadow-chai-accent/20">
+                
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-12 mt-16 opacity-0 animate-[fadeIn_1s_ease_1.8s_forwards]">
+                    <a href="/login" class="bg-accent text-white px-12 py-5 rounded-full text-[10px] uppercase tracking-widest font-bold hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-accent/40 transition-all duration-500"
+                       th:text="#{landing.cta.enter}">
                         Intră în Arenă
                     </a>
-                    <a href="#modes" class="bg-transparent border-2 border-chai-dark text-chai-dark px-8 py-4 rounded-xl text-lg font-semibold hover:bg-chai-dark hover:text-white transition-all">
+                    <a href="#modes" class="nav-link-elite border-b border-transparent"
+                       th:text="#{landing.cta.modes}">
                         Vezi Moduri de Joc
                     </a>
                 </div>
@@ -25,66 +49,163 @@
         </section>
 
         <!-- Stats Section -->
-        <section class="bg-white/50 py-12 border-y border-chai-dark/10">
-            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div>
-                    <span class="block text-4xl font-heading font-bold text-chai-accent">1,240+</span>
-                    <span class="text-chai-dark uppercase tracking-wider text-sm font-semibold">Dueluri Astăzi</span>
+        <section class="py-32 border-y border-[#EAE6E1] bg-white">
+            <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-20">
+                <div class="flex flex-col items-center">
+                    <span class="text-6xl font-heading font-bold text-accent mb-4">1,240+</span>
+                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.duels}">Dueluri Astăzi</span>
                 </div>
-                <div>
-                    <span class="block text-4xl font-heading font-bold text-chai-accent">5.2s</span>
-                    <span class="text-chai-dark uppercase tracking-wider text-sm font-semibold">Timp Mediu Arbitraj AI</span>
+                <div class="flex flex-col items-center">
+                    <span class="text-6xl font-heading font-bold text-accent mb-4">5.2s</span>
+                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.time}">Timp Mediu Arbitraj AI</span>
                 </div>
-                <div>
-                    <span class="block text-4xl font-heading font-bold text-chai-accent">850</span>
-                    <span class="text-chai-dark uppercase tracking-wider text-sm font-semibold">Debateri Activi</span>
+                <div class="flex flex-col items-center">
+                    <span class="text-6xl font-heading font-bold text-accent mb-4">850</span>
+                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.active}">Debateri Activi</span>
                 </div>
             </div>
         </section>
 
         <!-- Game Modes Section -->
-        <section id="modes" class="py-20 px-4">
+        <section id="modes" class="py-40 px-6">
             <div class="max-w-7xl mx-auto">
-                <h2 class="text-3xl font-heading font-bold text-center text-chai-text mb-12">Alege Modul de Luptă</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center mb-32">
+                    <h2 class="text-4xl font-heading font-bold uppercase tracking-widest" th:text="#{landing.modes.title}">Alege Modul de Luptă</h2>
+                    <div class="w-16 h-[1px] bg-accent mx-auto mt-8 opacity-30"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                     <!-- Blitz -->
-                    <div class="bg-white p-8 rounded-2xl border border-chai-dark/20 shadow-sm hover:border-chai-accent transition-colors group">
-                        <div class="w-12 h-12 bg-chai-accent/10 text-chai-accent rounded-lg flex items-center justify-center mb-6 group-hover:bg-chai-accent group-hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
+                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
+                        <div class="card-content">
+                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.blitz.title}">Blitz</h3>
+                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.blitz.desc}">2 minute pe rundă. Gândește repede, lovește precis.</p>
                         </div>
-                        <h3 class="text-xl font-heading font-bold mb-3">Blitz</h3>
-                        <p class="text-chai-dark/80 mb-6">2 minute pe rundă. Gândește repede, lovește precis. Ideal pentru minți ascuțite.</p>
-                        <span class="text-chai-accent font-bold">2 Min / Turn</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.blitz.time}">2 MIN / TURN</span>
+                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
+                        </div>
                     </div>
 
                     <!-- Rapid -->
-                    <div class="bg-white p-8 rounded-2xl border border-chai-dark/20 shadow-sm hover:border-chai-accent transition-colors group">
-                        <div class="w-12 h-12 bg-chai-accent/10 text-chai-accent rounded-lg flex items-center justify-center mb-6 group-hover:bg-chai-accent group-hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
+                        <div class="card-content">
+                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.rapid.title}">Rapid</h3>
+                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.rapid.desc}">5 minute pe rundă. Echilibru perfect între viteză și structură.</p>
                         </div>
-                        <h3 class="text-xl font-heading font-bold mb-3">Rapid</h3>
-                        <p class="text-chai-dark/80 mb-6">5 minute pe rundă. Echilibru perfect între viteză și structura argumentului.</p>
-                        <span class="text-chai-accent font-bold">5 Min / Turn</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.rapid.time}">5 MIN / TURN</span>
+                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
+                        </div>
                     </div>
 
                     <!-- Standard -->
-                    <div class="bg-white p-8 rounded-2xl border border-chai-dark/20 shadow-sm hover:border-chai-accent transition-colors group">
-                        <div class="w-12 h-12 bg-chai-accent/10 text-chai-accent rounded-lg flex items-center justify-center mb-6 group-hover:bg-chai-accent group-hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
+                        <div class="card-content">
+                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.standard.title}">Standard</h3>
+                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.standard.desc}">10 minute pe rundă. Pentru analize profunde și dovezi complexe.</p>
                         </div>
-                        <h3 class="text-xl font-heading font-bold mb-3">Standard</h3>
-                        <p class="text-chai-dark/80 mb-6">10 minute pe rundă. Pentru analize profunde și dovezi complexe. Fără grabă.</p>
-                        <span class="text-chai-accent font-bold">10 Min / Turn</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.standard.time}">10 MIN / TURN</span>
+                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
     </main>
+
+    <th:block th:fragment="scripts">
+        <script>
+            // Splash Screen Logic
+            (function() {
+                const splash = document.getElementById('splash-screen');
+                const logo = document.getElementById('splash-logo');
+                const title = document.getElementById('splash-title');
+                const slogan = document.getElementById('splash-slogan');
+                
+                if (sessionStorage.getItem('hasSeenSplash')) {
+                    splash.style.display = 'none';
+                    document.body.classList.remove('overflow-hidden');
+                } else {
+                    // Start Animation Sequence
+                    setTimeout(() => {
+                        logo.style.opacity = '1';
+                        logo.style.transform = 'scale(1)';
+                    }, 100);
+
+                    setTimeout(() => {
+                        title.style.opacity = '1';
+                        title.style.transform = 'translateY(0)';
+                    }, 500);
+
+                    setTimeout(() => {
+                        slogan.style.opacity = '1';
+                        slogan.style.transform = 'translateY(0)';
+                    }, 700);
+
+                    setTimeout(() => {
+                        splash.style.transform = 'translateY(-100%)';
+                        splash.style.opacity = '0';
+                        splash.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
+                        document.body.classList.remove('overflow-hidden');
+                        sessionStorage.setItem('hasSeenSplash', 'true');
+                    }, 2500);
+                }
+            })();
+
+            // Text Reveal Logic
+            const sloganContainer = document.getElementById('slogan-container');
+            if (sloganContainer) {
+                const sloganText = sloganContainer.getAttribute('data-text');
+                const words = sloganText.split(' ');
+                sloganContainer.innerHTML = words.map((word, i) => `
+                    <span class="reveal-text inline-block overflow-hidden mr-4">
+                        <span class="reveal-word" style="animation-delay: ${0.4 + (i * 0.1)}s">${word}</span>
+                    </span>
+                `).join('');
+            }
+
+            // Subtle Mouse Tilt for Cards
+            document.querySelectorAll('.card-parallax').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 35;
+                    const rotateY = (centerX - x) / 35;
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `rotateX(0) rotateY(0)`;
+                });
+            });
+        </script>
+    </th:block>
 </body>
 </html>
