@@ -1,5 +1,6 @@
 package com.ArguMind.ArguMind.dto;
 
+import com.ArguMind.ArguMind.model.GameMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,8 @@ public class MatchResponseDto {
     private Long id;
     private String topic;
     private String status;
+    private GameMode gameMode;
+    private Integer initialTime; // Timpul în secunde conform modului
     private Long proUserId;
     private Long contraUserId;
     private Long winnerId;

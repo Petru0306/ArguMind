@@ -22,6 +22,11 @@ public class Match {
     @Builder.Default
     private String status = "PENDING";
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "game_mode")
+    @Builder.Default
+    private GameMode gameMode = GameMode.STANDARD;
+
     @ManyToOne
     @JoinColumn(name = "pro_user_id")
     private User proUser;

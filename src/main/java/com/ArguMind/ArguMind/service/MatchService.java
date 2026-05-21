@@ -1,15 +1,15 @@
 package com.ArguMind.ArguMind.service;
 
-import com.ArguMind.ArguMind.dto.ArgumentSubmitDto;
-import com.ArguMind.ArguMind.dto.MatchResponseDto;
-import com.ArguMind.ArguMind.dto.MatchmakingRequestDto;
+import com.ArguMind.ArguMind.dto.*;
 import com.ArguMind.ArguMind.model.Argument;
+import com.ArguMind.ArguMind.model.GameMode;
 import com.ArguMind.ArguMind.model.Match;
 import com.ArguMind.ArguMind.model.User;
 import com.ArguMind.ArguMind.repository.ArgumentRepository;
 import com.ArguMind.ArguMind.repository.MatchRepository;
 import com.ArguMind.ArguMind.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +23,7 @@ public class MatchService {
     private final UserRepository userRepository;
     private final ArgumentRepository argumentRepository;
     private final AiJudgeService aiJudgeService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public MatchResponseDto joinMatchmaking(MatchmakingRequestDto request) {
@@ -38,12 +39,18 @@ public class MatchService {
                     }
                     match.setContraUser(user);
                     match.setStatus("ACTIVE");
-                    return mapToResponseDto(matchRepository.save(match));
+                    Match savedMatch = matchRepository.save(match);
+                    
+                    // Notificăm startul meciului via WebSocket (trimitem DTO-ul complet)
+                    notifyMatchUpdate(savedMatch.getId(), GameEventDto.EventType.START, mapToResponseDto(savedMatch));
+                    
+                    return mapToResponseDto(savedMatch);
                 })
                 .orElseGet(() -> {
                     // Dacă nu există, creează unul nou
                     Match newMatch = Match.builder()
                             .topic(request.getTopic())
+                            .gameMode(request.getGameMode() != null ? request.getGameMode() : GameMode.STANDARD)
                             .proUser(user)
                             .status("PENDING")
                             .build();
@@ -97,14 +104,28 @@ public class MatchService {
 
         argumentRepository.save(argument);
 
+        // Notificăm trimiterea argumentului și schimbarea de rând
+        notifyMatchUpdate(matchId, GameEventDto.EventType.TURN_CHANGE, "Turn changed!");
+
         // Dacă s-au trimis 4 argumente (2 runde complete), trecem la PROCESSING_AI
         if (argCount + 1 >= 4) {
             match.setStatus("PROCESSING_AI");
             matchRepository.save(match);
             
-            // Declanșăm evaluarea AI (momentan sincron pentru simplitate)
+            // Notificăm trecerea la AI
+            notifyMatchUpdate(matchId, GameEventDto.EventType.PROCESSING_AI, "AI is judging...");
+            
+            // Declanșăm evaluarea AI
             aiJudgeService.evaluateMatch(matchId);
         }
+    }
+
+    private void notifyMatchUpdate(Long matchId, GameEventDto.EventType type, Object payload) {
+        messagingTemplate.convertAndSend("/topic/match/" + matchId, 
+                GameEventDto.builder()
+                        .type(type)
+                        .payload(payload)
+                        .build());
     }
 
     @Transactional(readOnly = true)
@@ -119,6 +140,8 @@ public class MatchService {
                 .id(match.getId())
                 .topic(match.getTopic())
                 .status(match.getStatus())
+                .gameMode(match.getGameMode())
+                .initialTime(match.getGameMode().getTurnTimeSeconds())
                 .proUserId(match.getProUser().getId())
                 .contraUserId(match.getContraUser() != null ? match.getContraUser().getId() : null)
                 .winnerId(match.getWinner() != null ? match.getWinner().getId() : null)

@@ -1,5 +1,6 @@
 package com.ArguMind.ArguMind.service;
 
+import com.ArguMind.ArguMind.dto.GameEventDto;
 import com.ArguMind.ArguMind.dto.EvaluationResultDto;
 import com.ArguMind.ArguMind.dto.FallacyDto;
 import com.ArguMind.ArguMind.dto.PlayerScoreDto;
@@ -13,6 +14,7 @@ import com.ArguMind.ArguMind.repository.MatchRepository;
 import com.ArguMind.ArguMind.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class AiJudgeService {
     private final LogicalFallacyRepository logicalFallacyRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public void evaluateMatch(Long matchId) {
@@ -91,6 +94,14 @@ public class AiJudgeService {
             loser.setEloRating(loser.getEloRating() - 25);
             userRepository.save(winner);
             userRepository.save(loser);
+
+            // Notificăm finalizarea meciului și rezultatul via WebSocket
+            messagingTemplate.convertAndSend("/topic/match/" + matchId, 
+                GameEventDto.builder()
+                        .type(GameEventDto.EventType.FINISHED)
+                        .senderUsername("SYSTEM")
+                        .payload(result)
+                        .build());
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to evaluate match with AI", e);

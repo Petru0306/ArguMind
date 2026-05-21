@@ -1,5 +1,6 @@
 package com.ArguMind.ArguMind.dto;
 
+import com.ArguMind.ArguMind.model.GameMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class MatchmakingRequestDto {
     private Long userId;
     private String topic;
+    private GameMode gameMode;
 }
