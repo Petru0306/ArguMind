@@ -27,7 +27,32 @@ Proiectul respectă o arhitectură stratificată (Layered Architecture) pentru a
 
 ---
 
-## 4. Schema Bazei de Date (Implementată)
+## 4. Fluxul Principal de Joc (The Core Loop)
+1.  **Inițiere:** Matchmaking pe o temă -> Rol PRO sau CONTRA.
+2.  **Runde (Turn-based):** 2-3 runde. PRO scrie (2-3 min), apoi CONTRA răspunde.
+3.  **Evaluare AI:** Procesare în fundal, detectare erori logice.
+4.  **Verdict:** Fișă de scor, feedback retoric, actualizare ELO.
+
+---
+
+## 5. Structura Aplicației (Pagini)
+1.  **Landing Page:** Minimalist academic, statistici live, CTA Login/Register.
+2.  **Dashboard:** Profil (ELO, Rang), Grafice evoluție, Matchmaking central.
+3.  **Lobby:** Selecție teme pe categorii, Arene Private.
+4.  **Arena (Real-time):** Split-screen PRO/CONTRA, Timere, Status "Oponentul scrie...".
+5.  **Post-Match:** Fișă scor (Logică, Claritate, Dovezi, Retorică), Highlight erori logice cu tooltips.
+6.  **Leaderboard:** Clasament global sortat după ELO.
+
+---
+
+## 6. Personalități AI Judge
+*   **Socrates:** Strict pe definiții și logică pură.
+*   **Cicero:** Accent pe stil, vocabular și retorică.
+*   **Gordon:** Sarcastic, feedback tăios (gaming style).
+
+---
+
+## 7. Schema Bazei de Date (Implementată)
 
 ### Tabela `users`
 * `id` (UUID / BIGINT, PK)
@@ -39,7 +64,7 @@ Proiectul respectă o arhitectură stratificată (Layered Architecture) pentru a
 ### Tabela `matches`
 * `id` (UUID / BIGINT, PK)
 * `topic` (VARCHAR)
-* `status` (VARCHAR: PENDING, ACTIVE, FINISHED)
+* `status` (VARCHAR: PENDING, ACTIVE, FINISHED, PROCESSING_AI)
 * `pro_user_id` (FK -> users.id)
 * `contra_user_id` (FK -> users.id)
 * `winner_id` (FK -> users.id, Nullable)
@@ -54,7 +79,7 @@ Proiectul respectă o arhitectură stratificată (Layered Architecture) pentru a
 
 ---
 
-## 5. Instrucțiuni pentru Gemini (System Prompt Local)
+## 8. Instrucțiuni pentru Gemini (System Prompt Local)
 Când asiști în acest proiect, respectă următoarele reguli:
 1. **Fără cod redundant:** Oferă soluții curate, axate pe Spring Boot 3 și baze de date relaționale. Folosește Lombok pentru a reduce codul boilerplate.
 2. **Arhitectură DTO:** Nu expune niciodată entitățile direct în Controller. Folosește DTO-uri pentru request și response.
@@ -63,12 +88,18 @@ Când asiști în acest proiect, respectă următoarele reguli:
 
 ---
 
-## 6. Status Curent (Unde ne aflăm)
+## 9. Status Curent & Roadmap
 - [x] Generare proiect Spring Initializr.
 - [x] Configurare Repository Git.
 - [x] Configurare PostgreSQL (Bază de date: `argumind`, User: `ArguMind`).
 - [x] Implementare Arhitectură Stratificată (`model`, `dto`, `repository`, `service`, `controller`).
 - [x] Implementare Endpoint Înregistrare (`/api/auth/register`).
-- [ ] Configurare Spring Security & BCrypt (Parole securizate).
-- [ ] Implementare Endpoint Login & Autentificare (JWT).
-- [ ] Logica pentru Match-uri & Argumente.
+- [ ] **Etapa 1: Game State Engine (Backend)**
+    - [ ] Matchmaking logic (Pending -> Active).
+    - [ ] Round control (Submit argument, check turns).
+    - [ ] State: `PROCESSING_AI` transition.
+- [ ] **Etapa 2: Configurare Spring Security & BCrypt**.
+- [ ] **Etapa 3: Integrare LLM (Gemini/OpenAI API)**.
+- [ ] **Etapa 4: Real-time via WebSockets**.
+- [ ] **Etapa 5: Frontend (Landing, Dashboard, Arena)**.
+- [ ] **Etapa 6: Gamification & Achievements**.

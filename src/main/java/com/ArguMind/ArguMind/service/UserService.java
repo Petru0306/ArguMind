@@ -33,4 +33,16 @@ public class UserService {
                 .rankTitle(savedUser.getRankTitle())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public UserRegistrationResponseDto getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserRegistrationResponseDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .eloRating(user.getEloRating())
+                .rankTitle(user.getRankTitle())
+                .build();
+    }
 }
