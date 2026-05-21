@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
+<body>
+    <main class="py-10 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-heading font-bold text-chai-text mb-3" th:text="#{topics.page.title}">Teme de debate</h1>
+                <p class="text-chai-dark/70 max-w-2xl mx-auto" th:text="#{topics.page.subtitle}">Alege o temă — lobby custom, matchmaking rapid sau antrenament cu AI.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 justify-center mb-8">
+                <a href="/topics" class="px-4 py-2 rounded-full text-sm font-bold border nav-interactive"
+                   th:classappend="${selectedCategory == null} ? 'bg-chai-accent text-white border-chai-accent' : 'bg-white border-chai-dark/20 hover:border-chai-accent'"
+                   th:text="#{topics.filter.all}">
+                    Toate
+                </a>
+                <a th:each="cat : ${categories}" th:href="@{/topics(category=${cat})}"
+                   th:text="${cat}"
+                   class="px-4 py-2 rounded-full text-sm font-bold border bg-white border-chai-dark/20 hover:border-chai-accent nav-interactive"
+                   th:classappend="${selectedCategory == cat} ? ' !bg-chai-accent !text-white !border-chai-accent' : ''">Categorie</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <article th:each="t : ${topics}"
+                         class="bg-white p-6 rounded-2xl border border-chai-dark/10 shadow-md hover-card flex flex-col"
+                         th:attr="data-topic=${t.title}">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-chai-accent mb-2" th:text="${t.getDisplayCategory(#locale)}">Tech</span>
+                    <h2 class="text-lg font-heading font-bold text-chai-text leading-snug mb-3" th:text="${t.getDisplayTitle(#locale)}">Tema</h2>
+                    <p class="text-sm text-chai-dark/60 flex-1 mb-4" th:text="#{topics.card.hint}">Lobby privat, matchmaking sau debat 1v1 cu AI Coach.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <a sec:authorize="isAuthenticated()"
+                           th:href="@{/dashboard(topic=${t.title},gameMode=STANDARD)}"
+                           class="px-4 py-2 bg-chai-accent text-white rounded-xl text-sm font-bold btn-glow"
+                           th:text="#{topics.btn.lobby}">
+                            Lobby Standard
+                        </a>
+                        <button type="button" sec:authorize="isAuthenticated()"
+                                class="px-4 py-2 bg-chai-dark text-white rounded-xl text-sm font-bold btn-glow matchmaking-btn"
+                                th:attr="data-topic=${t.title}"
+                                th:text="#{topics.btn.matchmaking}">
+                            Matchmaking
+                        </button>
+                        <a sec:authorize="isAuthenticated()"
+                           th:href="@{/ai-debate(topic=${t.title})}"
+                           class="px-4 py-2 bg-chai-bg border border-chai-dark/20 rounded-xl text-sm font-bold hover:border-chai-accent"
+                           th:text="#{topics.btn.ai}">
+                            Debate cu AI
+                        </a>
+                        <a sec:authorize="isAuthenticated()"
+                           th:href="@{/dashboard(topic=${t.title},gameMode=TEAMS_2V2)}"
+                           class="px-4 py-2 border border-chai-dark/30 rounded-xl text-sm font-bold hover:border-chai-accent"
+                           th:text="#{topics.btn.2v2}">
+                            2v2 Echipe
+                        </a>
+                        <a sec:authorize="isAnonymous()" href="/login"
+                           class="px-4 py-2 bg-chai-accent text-white rounded-xl text-sm font-bold"
+                           th:text="#{topics.btn.login}">Login</a>
+                    </div>
+                </article>
+            </div>
+
+            <p th:if="${#lists.isEmpty(topics)}" class="text-center text-chai-dark/50 italic py-16" th:text="#{topics.empty}">Nicio temă în această categorie.</p>
+        </div>
+
+        <div id="matchmaking-overlay" class="fixed inset-0 bg-chai-dark/95 z-[2000] hidden items-center justify-center flex-col text-white px-6">
+            <div class="relative w-32 h-32 mb-10">
+                <div class="absolute inset-0 rounded-full border-4 border-white/10 match-pulse"></div>
+                <div class="absolute inset-4 rounded-full border-2 border-chai-accent/60 match-pulse" style="animation-delay: 0.3s"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-12 h-12 text-chai-accent animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+            <h2 id="mm-title" class="text-2xl font-heading font-bold mb-2" th:text="#{topics.mm.title}">Căutăm un adversar...</h2>
+            <p id="mm-subtitle" class="text-white/70 text-center max-w-md text-sm" th:text="#{topics.mm.subtitle}">Scanăm jucători cu ELO similar și disponibili pentru duel rapid.</p>
+            <div id="mm-progress" class="w-64 h-1.5 bg-white/10 rounded-full mt-8 overflow-hidden">
+                <div id="mm-bar" class="h-full bg-chai-accent rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="mm-hint" class="text-xs text-white/40 mt-4 uppercase tracking-widest" th:text="#{topics.mm.hint}">Se sincronizează arena</p>
+
+            <div id="mm-found" class="hidden mt-8 text-center">
+                <div class="flex items-center justify-center gap-3 bg-white/10 px-6 py-4 rounded-2xl">
+                    <div id="mm-avatar" class="w-12 h-12 rounded-full bg-chai-accent flex items-center justify-center font-bold text-lg">?</div>
+                    <div class="text-left">
+                        <p class="text-xs text-white/50 uppercase" th:text="#{topics.mm.opponent.label}">Adversar găsit</p>
+                        <p id="mm-opponent" class="font-bold text-lg">Debatator_42</p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="mm-cancel" class="mt-10 text-sm text-white/60 hover:text-white underline" th:text="#{topics.mm.cancel}">Anulează căutarea</button>
+        </div>
+    </main>
+
+    <th:block th:fragment="scripts">
+        <script th:inline="javascript">
+            window.i18n = {
+                mmTitle: /*[[#{topics.mm.title}]]*/ '',
+                mmSubtitle: /*[[#{topics.mm.subtitle}]]*/ '',
+                mmHint: /*[[#{topics.mm.hint}]]*/ '',
+                mmHintLatency: /*[[#{topics.mm.hint.latency}]]*/ '',
+                mmFoundTitle: /*[[#{topics.mm.found.title}]]*/ '',
+                mmFoundSubtitle: /*[[#{topics.mm.found.subtitle}]]*/ '',
+                mmFoundPrep: /*[[#{topics.mm.found.prep}]]*/ '',
+                mmConnectingTitle: /*[[#{topics.mm.connecting.title}]]*/ '',
+                mmConnectingSubtitle: /*[[#{topics.mm.connecting.subtitle('{0}')}]]*/ '',
+                mmNoPlayerTitle: /*[[#{topics.mm.noPlayer.title}]]*/ '',
+                mmNoPlayerSubtitle: /*[[#{topics.mm.noPlayer.subtitle}]]*/ ''
+            };
+        </script>
+        <script>
+            const OPPONENTS = ['RhetorX', 'LogicStorm', 'Debatator_RO', 'ArgusPrime', 'ContraMind', 'EloHunter', 'Dialectic', 'SocraticWave'];
+            let mmTimer = null;
+            let mmTopic = '';
+            const i18n = window.i18n;
+
+            function openMatchmaking(topic) {
+                mmTopic = topic;
+                const overlay = document.getElementById('matchmaking-overlay');
+                const bar = document.getElementById('mm-bar');
+                const found = document.getElementById('mm-found');
+                const title = document.getElementById('mm-title');
+                const sub = document.getElementById('mm-subtitle');
+                const hint = document.getElementById('mm-hint');
+
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                found.classList.add('hidden');
+                title.textContent = i18n.mmTitle;
+                sub.textContent = i18n.mmSubtitle;
+                hint.textContent = i18n.mmHint;
+                bar.style.width = '0%';
+
+                let progress = 0;
+                const duration = 7000 + Math.random() * 6000;
+                const start = Date.now();
+
+                clearInterval(mmTimer);
+                mmTimer = setInterval(() => {
+                    const elapsed = Date.now() - start;
+                    progress = Math.min(95, (elapsed / duration) * 100);
+                    bar.style.width = progress + '%';
+                    if (elapsed > duration * 0.4 && elapsed < duration * 0.85) {
+                        hint.textContent = i18n.mmHintLatency;
+                    }
+                }, 120);
+
+                const success = Math.random() < 0.72;
+
+                setTimeout(() => {
+                    clearInterval(mmTimer);
+                    bar.style.width = '100%';
+
+                    if (!success) {
+                        title.textContent = i18n.mmNoPlayerTitle;
+                        sub.textContent = i18n.mmNoPlayerSubtitle;
+                        hint.textContent = '';
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            overlay.classList.remove('flex');
+                            window.location.href = '/dashboard?topic=' + encodeURIComponent(mmTopic) + '&gameMode=RAPID';
+                        }, 2200);
+                        return;
+                    }
+
+                    const name = OPPONENTS[Math.floor(Math.random() * OPPONENTS.length)];
+                    document.getElementById('mm-opponent').textContent = name;
+                    document.getElementById('mm-avatar').textContent = name.charAt(0).toUpperCase();
+                    found.classList.remove('hidden');
+                    title.textContent = i18n.mmFoundTitle;
+                    sub.textContent = i18n.mmFoundSubtitle;
+                    hint.textContent = i18n.mmFoundPrep;
+
+                    setTimeout(() => {
+                        title.textContent = i18n.mmConnectingTitle;
+                        sub.textContent = i18n.mmConnectingSubtitle.replace('{0}', name);
+                    }, 1500);
+
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        overlay.classList.remove('flex');
+                        window.location.href = '/dashboard?topic=' + encodeURIComponent(mmTopic)
+                            + '&gameMode=RAPID&fromMatchmaking=1&opponent=' + encodeURIComponent(name);
+                    }, 3800);
+                }, duration);
+            }
+
+            document.querySelectorAll('.matchmaking-btn').forEach(btn => {
+                btn.addEventListener('click', () => openMatchmaking(btn.dataset.topic));
+            });
+            document.getElementById('mm-cancel').addEventListener('click', () => {
+                clearInterval(mmTimer);
+                const overlay = document.getElementById('matchmaking-overlay');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            });
+        </script>
+    </th:block>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
+<body>
+<main class="py-8 px-4 min-h-[calc(100vh-12rem)]">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-heading font-bold text-chai-text mb-2" th:text="#{ai.page.title}">Debate cu AI</h1>
+            <p class="text-chai-dark/70" th:text="#{ai.page.subtitle}">Antrenor de argumentare — alege tema, stilul coach-ului și exersează PRO sau CONTRA.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white rounded-2xl border border-chai-dark/10 p-5 shadow-md hover-card">
+                <label class="block text-xs font-bold uppercase tracking-widest text-chai-dark/50 mb-2" th:text="#{ai.topic.label}">Temă</label>
+                <select id="topic-select" class="w-full px-4 py-3 rounded-xl border border-chai-dark/15 text-chai-text">
+                    <option value="" th:text="#{ai.topic.placeholder}">— Alege o temă —</option>
+                    <option th:each="t : ${debateTopics}" th:value="${t.title}" th:text="${t.getDisplayTitle(#locale)}"
+                            th:selected="${selectedTopic == t.title}">Tema</option>
+                </select>
+            </div>
+            <div class="bg-white rounded-2xl border border-chai-dark/10 p-5 shadow-md hover-card">
+                <label class="block text-xs font-bold uppercase tracking-widest text-chai-dark/50 mb-2" th:text="#{ai.personality.label}">Stil coach AI</label>
+                <p id="personality-desc" class="text-xs text-chai-dark/60 mb-3" th:text="#{personality.SERIOUS.desc}">Ton academic, direct, focus pe logică.</p>
+                <div class="flex flex-wrap gap-2" id="personality-chips">
+                    <button type="button" th:each="p : ${personalities}"
+                            th:attr="data-value=${p.name()}"
+                            th:text="#{'personality.' + ${p.name()} + '.label'}"
+                            class="personality-chip px-3 py-1.5 rounded-full text-xs font-bold border border-chai-dark/20 bg-chai-bg">
+                        Serios
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat-box" class="bg-white rounded-3xl border border-chai-dark/10 shadow-xl flex flex-col min-h-[420px] max-h-[60vh]">
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="p-4 bg-chai-bg/60 rounded-2xl border border-chai-dark/10 text-sm text-chai-text leading-relaxed">
+                    <span class="font-bold text-chai-accent block mb-1" th:text="#{ai.coach.name}">ArguMind Coach</span>
+                    <span th:text="#{ai.coach.intro}">Salut! Alege tema și stilul de mai sus, apoi spune-mi dacă exersezi PRO sau CONTRA.</span>
+                </div>
+            </div>
+            <div class="p-4 border-t border-chai-dark/10 flex gap-3">
+                <textarea id="chat-input" rows="2" th:placeholder="#{ai.input.placeholder}"
+                          class="flex-1 px-4 py-3 rounded-xl border border-chai-dark/15 resize-none"></textarea>
+                <button id="btn-send" type="button"
+                        class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow shrink-0 self-end"
+                        th:text="#{ai.send}">
+                    Trimite
+                </button>
+            </div>
+        </div>
+        <p id="chat-status" class="text-center text-xs text-chai-dark/50 mt-3 hidden" th:text="#{ai.status}">Coach-ul scrie...</p>
+    </div>
+</main>
+
+<th:block th:fragment="scripts">
+<script th:inline="javascript">
+    window.i18n = {
+        coachName: /*[[#{ai.coach.name}]]*/ '',
+        you: /*[[#{ai.you}]]*/ '',
+        errorNoTopic: /*[[#{ai.error.noTopic}]]*/ '',
+        errorConnection: /*[[#{ai.error.connection}]]*/ '',
+        errorNoReply: /*[[#{ai.error.noReply}]]*/ '',
+        personalities: {
+            SERIOUS: /*[[#{personality.SERIOUS.desc}]]*/ '',
+            GENTLE: /*[[#{personality.GENTLE.desc}]]*/ '',
+            FUNNY: /*[[#{personality.FUNNY.desc}]]*/ '',
+            SOCRATIC: /*[[#{personality.SOCRATIC.desc}]]*/ '',
+            COMPETITIVE: /*[[#{personality.COMPETITIVE.desc}]]*/ '',
+            DEVIL_ADVOCATE: /*[[#{personality.DEVIL_ADVOCATE.desc}]]*/ ''
+        }
+    };
+</script>
+<script th:src="@{/js/markdown-lite.js}"></script>
+<script>
+    const history = [];
+    let selectedPersonality = 'SERIOUS';
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl = document.getElementById('chat-input');
+    const statusEl = document.getElementById('chat-status');
+    const topicEl = document.getElementById('topic-select');
+    const descEl = document.getElementById('personality-desc');
+
+    function personalityDesc(name) {
+        return window.i18n.personalities[name] || '';
+    }
+
+    document.querySelectorAll('.personality-chip').forEach((chip, i) => {
+        if (i === 0) chip.classList.add('active');
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.personality-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            selectedPersonality = chip.dataset.value;
+            descEl.textContent = personalityDesc(selectedPersonality);
+        });
+    });
+    if (document.querySelector('.personality-chip.active')) {
+        selectedPersonality = document.querySelector('.personality-chip.active').dataset.value;
+        descEl.textContent = personalityDesc(selectedPersonality);
+    }
+
+    function appendBubble(role, text) {
+        const wrap = document.createElement('div');
+        wrap.className = role === 'user'
+            ? 'p-4 bg-chai-accent/10 rounded-2xl border border-chai-accent/20 text-sm ml-8'
+            : 'p-4 bg-chai-bg/60 rounded-2xl border border-chai-dark/10 text-sm mr-8';
+
+        const label = document.createElement('span');
+        label.className = 'font-bold text-chai-accent block mb-2';
+        label.textContent = role === 'user' ? window.i18n.you : window.i18n.coachName;
+
+        const body = document.createElement('div');
+        body.className = 'chat-markdown leading-relaxed';
+        if (role === 'user') {
+            body.classList.add('whitespace-pre-wrap');
+            body.textContent = text;
+        } else {
+            body.innerHTML = typeof renderCoachMarkdown === 'function'
+                ? renderCoachMarkdown(text)
+                : renderMarkdownLite(text);
+        }
+
+        wrap.appendChild(label);
+        wrap.appendChild(body);
+        messagesEl.appendChild(wrap);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const text = inputEl.value.trim();
+        const topic = topicEl.value.trim();
+        if (!text) return;
+        if (!topic) {
+            alert(window.i18n.errorNoTopic);
+            topicEl.focus();
+            return;
+        }
+
+        appendBubble('user', text);
+        history.push({ role: 'user', content: text });
+        inputEl.value = '';
+        document.getElementById('btn-send').disabled = true;
+        statusEl.classList.remove('hidden');
+
+        try {
+            const res = await fetch('/api/ai-debate/chat', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    topic, message: text, personality: selectedPersonality,
+                    history: history.slice(0, -1)
+                })
+            });
+            const data = await res.json();
+            const reply = data.reply || window.i18n.errorNoReply;
+            appendBubble('assistant', reply);
+            history.push({ role: 'assistant', content: reply });
+        } catch (e) {
+            appendBubble('assistant', window.i18n.errorConnection);
+        } finally {
+            document.getElementById('btn-send').disabled = false;
+            statusEl.classList.add('hidden');
+            inputEl.focus();
+        }
+    }
+
+    document.getElementById('btn-send').onclick = sendMessage;
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+</script>
+</th:block>
+</body>
+</html>

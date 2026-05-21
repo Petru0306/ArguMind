@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserRegistrationResponseDto {
     private Long id;
     private String username;
+    private String email;
     private Integer eloRating;
     private String rankTitle;
 }

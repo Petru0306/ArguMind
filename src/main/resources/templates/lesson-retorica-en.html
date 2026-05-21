@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← All lessons</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lesson 5</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Clarity and impact: rhetoric without manipulation
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                A high “Clarity &amp; Rhetoric” score does not mean being poetic — it means being easy to follow, memorable, and fair. Emotion is seasoning, not the main course.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Rule of 3 ideas</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                The audience's brain retains about 3 points. Winning structure:
+            </p>
+            <div class="grid gap-3 text-sm">
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Opening</strong> — position in 1 sentence + why the topic matters</div>
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Core</strong> — 2 arguments (not 7), each with evidence</div>
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Closing</strong> — restate position + answer the strongest objection</div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Hooks that are not manipulation</h2>
+            <div class="space-y-4 text-sm text-chai-dark/85">
+                <div class="p-4 border-l-4 border-green-400 bg-green-50/50 rounded-r-xl">
+                    <strong class="text-green-900">Good</strong> — real question: “What happens to democracy when news is filtered by algorithms?”
+                </div>
+                <div class="p-4 border-l-4 border-green-400 bg-green-50/50 rounded-r-xl">
+                    <strong class="text-green-900">Good</strong> — contrast: “We want free speech — but we accept automated moderation every day.”
+                </div>
+                <div class="p-4 border-l-4 border-red-400 bg-red-50/50 rounded-r-xl">
+                    <strong class="text-red-900">Risky</strong> — fear without data: “Our children will live in a digital dictatorship.”
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Short sentences, precise words</h2>
+            <table class="w-full text-sm mt-2">
+                <thead>
+                <tr class="text-left text-chai-dark/50 border-b border-chai-dark/10">
+                    <th class="pb-2">Instead of</th>
+                    <th class="pb-2">Try</th>
+                </tr>
+                </thead>
+                <tbody class="text-chai-dark/85">
+                <tr class="border-b border-chai-dark/5"><td class="py-2">“very many problems”</td><td class="py-2">“three main risks”</td></tr>
+                <tr class="border-b border-chai-dark/5"><td class="py-2">“people generally believe”</td><td class="py-2">“survey X shows 62%...”</td></tr>
+                <tr><td class="py-2">“it is clear that”</td><td class="py-2">“from premise A follows B”</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">4. A closing that sticks</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                The last sentence introduces no new ideas — it summarizes and offers a clear choice:
+            </p>
+            <blockquote class="border-l-4 border-chai-accent pl-4 italic text-chai-dark/75 text-sm">
+                “If we accept that [shared premise], then [your position] is the only one that solves [problem] without [major cost]. That is what I propose — and what I defend.”
+            </blockquote>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Put it all together</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">You have completed all 5 lessons — join a Standard match and apply the structure.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/lessons" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Review lessons</a>
+                <a href="/topics" class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">Pick a topic</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

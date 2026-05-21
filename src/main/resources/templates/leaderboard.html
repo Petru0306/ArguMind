@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-heading font-bold text-chai-text mb-2" th:text="#{leaderboard.title}">Leaderboard ELO</h1>
+        <p class="text-chai-dark/70 mb-8 text-base" th:text="#{leaderboard.subtitle}">Clasament live după rating — actualizat după fiecare meci finalizat.</p>
+
+        <div th:if="${#lists.isEmpty(entries)}" class="bg-white rounded-2xl p-12 text-center text-chai-dark/50" th:text="#{leaderboard.empty}">
+            Niciun jucător în clasament încă. Fii primul care câștigă un meci!
+        </div>
+
+        <div th:unless="${#lists.isEmpty(entries)}" class="bg-white rounded-2xl border border-chai-dark/10 overflow-hidden shadow-lg">
+            <table class="w-full text-left">
+                <thead class="bg-chai-bg text-sm uppercase tracking-wide text-chai-dark/70">
+                    <tr>
+                        <th class="px-6 py-4" th:text="#{leaderboard.col.position}">#</th>
+                        <th class="px-6 py-4" th:text="#{leaderboard.col.player}">Jucător</th>
+                        <th class="px-6 py-4" th:text="#{leaderboard.col.elo}">ELO</th>
+                        <th class="px-6 py-4" th:text="#{leaderboard.col.rank}">Rang</th>
+                        <th class="px-6 py-4" th:text="#{leaderboard.col.wins}">Victorii</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="e : ${entries}"
+                        th:attr="data-href=@{/player/{u}(u=${e.username})}"
+                        th:classappend="${e.userId == currentUserId} ? 'bg-chai-accent/10 font-semibold' : 'border-t border-chai-dark/5'"
+                        class="hover:bg-chai-bg/60 transition-colors">
+                        <td class="px-6 py-4 text-lg font-bold" th:text="${e.position}">1</td>
+                        <td class="px-6 py-4">
+                            <a th:href="@{/player/{u}(u=${e.username})}" class="font-semibold text-chai-text hover:text-chai-accent"
+                               th:text="${e.username}">user</a>
+                            <span th:if="${e.userId == currentUserId}" class="ml-2 text-xs text-chai-accent" th:text="#{leaderboard.you}">(tu)</span>
+                        </td>
+                        <td class="px-6 py-4 text-chai-accent font-bold text-lg" th:text="${e.eloRating}">1200</td>
+                        <td class="px-6 py-4 text-sm" th:text="${e.rankTitle}">NOVICE</td>
+                        <td class="px-6 py-4" th:text="${e.wins}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="/dashboard" class="text-chai-accent font-bold hover:underline" th:text="#{leaderboard.back}">← Înapoi la Dashboard</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

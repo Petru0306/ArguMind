@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-heading font-bold text-chai-text mb-6" th:text="#{about.title}">Despre ArguMind</h1>
+
+        <div class="space-y-6 text-base text-chai-dark/90 leading-relaxed">
+            <p th:text="#{about.intro}">ArguMind intro</p>
+
+            <section class="bg-white p-6 rounded-2xl border border-chai-dark/10">
+                <h2 class="text-xl font-heading font-bold mb-3" th:text="#{about.how.title}">Cum funcționează</h2>
+                <ol class="list-decimal list-inside space-y-2 text-sm">
+                    <li th:text="#{about.how.step1}">Creezi un cont și intri în dashboard.</li>
+                    <li th:text="#{about.how.step2}">Deschizi un lobby privat și trimiți codul unui prieten.</li>
+                    <li th:text="#{about.how.step3}">Alternați argumentele — 2 runde, timp limitat per mod (Blitz / Rapid / Standard).</li>
+                    <li th:text="#{about.how.step4}">AI-ul Gemini evaluează logică, claritate, dovezi și detectează erori logice.</li>
+                    <li th:text="#{about.how.step5}">ELO-ul se actualizează; urcă în leaderboard.</li>
+                </ol>
+            </section>
+
+            <section class="bg-chai-dark text-white p-6 rounded-2xl">
+                <h2 class="text-xl font-heading font-bold mb-3" th:text="#{about.team.title}">Echipa & misiune</h2>
+                <p class="text-white/90 text-sm" th:text="#{about.team.text}">
+                    Credem că debatarea structurată este o super-putere în era informației.
+                    ArguMind combină design propriu, WebSockets, Spring Boot și integrare AI
+                    pentru o experiență de „esport intelectual” accesibilă elevilor și studenților.
+                </p>
+            </section>
+
+            <p class="text-sm text-chai-dark/60" th:text="#{about.footer.note}">
+                Proiect open-source educațional · Paletă Spiced Chai · Arhitectură stratificată Spring Boot 3
+            </p>
+        </div>
+
+        <div class="mt-10 flex gap-4">
+            <a href="/register" class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold" th:text="#{about.cta.start}">Începe acum</a>
+            <a href="/fallacies" class="border border-chai-dark/20 px-6 py-3 rounded-xl font-semibold" th:text="#{about.cta.fallacies}">Învață erori logice</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

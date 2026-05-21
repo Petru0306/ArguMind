@@ -2,86 +2,121 @@
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
 <body>
-    <main class="py-12 px-4">
+    <main class="py-8 px-4">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                 <div>
                     <h1 class="text-4xl font-heading font-bold text-chai-text" 
                         th:text="#{dashboard.welcome(${#authentication.name})}">Bine ai venit!</h1>
-                    <p class="text-chai-dark/60 mt-2">Ești gata pentru o noua rundă de argumente?</p>
+                    <p class="text-chai-dark/60 mt-2" th:utext="#{dashboard.subtitle}">Creează un lobby sau intră cu cod.</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 shadow-md flex items-center gap-6">
                     <div class="text-center">
-                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rating</span>
+                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider" th:text="#{dashboard.rating}">Rating</span>
                         <span class="text-2xl font-heading font-bold text-chai-accent" th:text="${currentUserElo}">1000</span>
                     </div>
                     <div class="w-px h-10 bg-chai-dark/10"></div>
                     <div class="text-center">
-                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider">Rang</span>
+                        <span class="block text-sm font-semibold text-chai-dark uppercase tracking-wider" th:text="#{dashboard.rank}">Rang</span>
                         <span class="text-2xl font-heading font-bold text-chai-accent" th:text="${currentUserRank}">NOVICE</span>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <!-- Arena Action -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div class="lg:col-span-2 space-y-8">
-                    <div class="bg-chai-dark text-white p-10 rounded-3xl shadow-xl overflow-hidden relative group">
-                        <div class="relative z-10">
-                            <h2 class="text-3xl font-heading font-bold mb-4">Intră în Arenă</h2>
-                            <p class="text-white/80 text-lg mb-8 max-w-md">Ești gata să îți demonstrezi superioritatea logică? Găsește un oponent acum.</p>
-                            <button onclick="joinArena()" class="bg-chai-accent text-white px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all">
-                                Caută meci
-                            </button>
+                    <div class="bg-chai-dark text-white p-10 rounded-3xl shadow-xl">
+                        <h2 class="text-3xl font-heading font-bold mb-2" th:text="#{dashboard.lobby.title}">Lobby privat</h2>
+                        <p class="text-white/70 mb-8 text-sm" th:text="#{dashboard.lobby.subtitle}">Fără matchmaking automat — doar cod de invitație.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white/10 rounded-2xl p-6 border border-white/10">
+                                <h3 class="font-heading font-bold text-lg mb-4" th:text="#{dashboard.lobby.create.title}">Creează lobby</h3>
+                                <div class="space-y-3 mb-4">
+                                    <input type="hidden" id="topic-hidden" th:if="${selectedTopic != null}" th:value="${selectedTopic}">
+                                    <div th:if="${selectedTopic != null}" class="mb-3">
+                                        <span class="block text-xs font-bold uppercase tracking-widest text-white/50 mb-2" th:text="#{dashboard.lobby.selectedTopic}">Temă aleasă</span>
+                                        <p class="text-sm bg-white/20 rounded-xl px-4 py-3 leading-snug" th:text="${selectedTopic}">Tema</p>
+                                    </div>
+                                    <div th:if="${selectedTopic == null}" class="mb-3 p-4 rounded-xl bg-white/10 border border-white/15 text-center">
+                                        <p class="text-sm text-white/80 mb-3" th:text="#{dashboard.lobby.pickTopic}">Alege mai întâi o temă din catalog.</p>
+                                        <a href="/topics" class="inline-block bg-chai-accent text-white px-5 py-2 rounded-xl text-sm font-bold hover:brightness-110"
+                                           th:text="#{dashboard.lobby.goTopics}">
+                                            Mergi la Teme
+                                        </a>
+                                    </div>
+                                    <label class="block text-xs font-bold uppercase tracking-widest text-white/50" th:text="#{dashboard.lobby.mode}">Mod</label>
+                                    <select id="mode-select" class="w-full px-4 py-3 rounded-xl text-chai-text border-0">
+                                        <option value="BLITZ" th:text="|#{game.mode.BLITZ} (#{game.mode.BLITZ.hint})|">Blitz</option>
+                                        <option value="RAPID" selected th:text="|#{game.mode.RAPID} (#{game.mode.RAPID.hint})|">Rapid</option>
+                                        <option value="STANDARD" th:text="|#{game.mode.STANDARD} (#{game.mode.STANDARD.hint})|">Standard</option>
+                                        <option value="EXTENDED" th:text="|#{game.mode.EXTENDED} (#{game.mode.EXTENDED.hint})|">Extended</option>
+                                        <option value="TEAMS_2V2" th:text="|#{game.mode.TEAMS_2V2} (#{game.mode.TEAMS_2V2.hint})|">2v2</option>
+                                    </select>
+                                </div>
+                                <button onclick="createLobby()" id="btn-create-lobby"
+                                        th:disabled="${selectedTopic == null}"
+                                        th:classappend="${selectedTopic == null} ? ' opacity-50 cursor-not-allowed' : ' hover:brightness-110'"
+                                        class="w-full bg-chai-accent text-white py-3 rounded-xl font-bold"
+                                        th:text="#{dashboard.lobby.createBtn}">
+                                    Creează &amp; obține cod
+                                </button>
+                            </div>
+
+                            <div class="bg-white/10 rounded-2xl p-6 border border-white/10">
+                                <h3 class="font-heading font-bold text-lg mb-4" th:text="#{dashboard.lobby.join.title}">Intră cu cod</h3>
+                                <label class="block text-xs font-bold uppercase tracking-widest text-white/50 mb-2" th:text="#{dashboard.lobby.join.code}">Cod lobby (6 caractere)</label>
+                                <input type="text" id="lobby-code-input" maxlength="6"
+                                       th:placeholder="#{dashboard.lobby.join.placeholder}"
+                                       class="w-full px-4 py-3 rounded-xl text-chai-text text-center text-2xl font-bold tracking-[0.3em] uppercase border-0 mb-4">
+                                <button onclick="joinLobby()" id="btn-join-lobby"
+                                        class="w-full bg-white text-chai-dark py-3 rounded-xl font-bold hover:bg-chai-bg"
+                                        th:text="#{dashboard.lobby.joinBtn}">
+                                    Intră în lobby
+                                </button>
+                            </div>
                         </div>
-                        <!-- Decorative element -->
-                        <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
+
+                        <p id="lobby-status" class="mt-6 text-sm text-chai-accent font-semibold hidden"></p>
                     </div>
 
                     <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg">
-                        <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Meciuri Recente</h3>
-                        
-                        <div th:if="${#lists.isEmpty(recentMatches)}" class="text-center py-12 text-chai-dark/40 italic">
+                        <h3 class="text-xl font-heading font-bold text-chai-text mb-6" th:text="#{dashboard.recent.title}">Meciuri Recente</h3>
+                        <div th:if="${#lists.isEmpty(recentMatches)}" class="text-center py-12 text-chai-dark/40 italic" th:text="#{dashboard.recent.empty}">
                             Nu ai jucat niciun meci încă.
                         </div>
-
                         <div th:unless="${#lists.isEmpty(recentMatches)}" class="space-y-4">
-                            <div th:each="m : ${recentMatches}" class="flex items-center justify-between p-4 bg-chai-bg/20 rounded-2xl border border-chai-dark/5 hover:border-chai-accent/30 transition-all group">
+                            <div th:each="m : ${recentMatches}" class="flex items-center justify-between p-4 bg-chai-bg/40 rounded-2xl border border-chai-dark/5">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm"
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white"
                                          th:classappend="${m.winner != null && m.winner.id == currentUserId} ? 'bg-green-500' : 'bg-red-400'">
-                                        <span th:text="${m.winner != null && m.winner.id == currentUserId} ? 'W' : 'L'">W</span>
+                                        <span th:text="${m.winner != null && m.winner.id == currentUserId} ? #{common.win} : #{common.loss}">W</span>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-chai-text text-sm group-hover:text-chai-accent transition-colors" th:text="${m.topic}">Tema Meciului</h4>
+                                        <h4 class="font-bold text-chai-text text-sm" th:text="${m.topic}">Tema</h4>
                                         <span class="text-[10px] font-bold uppercase tracking-widest text-chai-dark/40" th:text="${m.gameMode}">STANDARD</span>
                                     </div>
                                 </div>
-                                <div class="text-right">
-                                    <a th:href="@{'/arena/' + ${m.id} + '/results'}" class="text-xs font-bold text-chai-accent hover:underline">Vezi Detalii</a>
-                                </div>
+                                <a th:href="@{'/arena/' + ${m.id} + '/results'}" class="text-xs font-bold text-chai-accent hover:underline" th:text="#{dashboard.recent.results}">Rezultate</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar Stats -->
-                <div class="space-y-8">
-                    <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg">
-                        <h3 class="text-xl font-heading font-bold text-chai-text mb-6">Profil</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between border-b border-chai-dark/5 pb-4">
-                                <span class="text-chai-dark/80">Victorii</span>
-                                <span class="font-bold text-chai-text" th:text="${wins}">0</span>
-                            </div>
-                            <div class="flex justify-between border-b border-chai-dark/5 pb-4">
-                                <span class="text-chai-dark/80">Înfrângeri</span>
-                                <span class="font-bold text-chai-text" th:text="${losses}">0</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-chai-dark/80">Acuratețe Logică</span>
-                                <span class="font-bold text-chai-accent" th:text="${logicAccuracy}">N/A</span>
-                            </div>
+                <div class="bg-white p-8 rounded-3xl border border-chai-dark/10 shadow-lg h-fit">
+                    <h3 class="text-xl font-heading font-bold text-chai-text mb-6" th:text="#{dashboard.profile.title}">Profil</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between border-b border-chai-dark/5 pb-4">
+                            <span class="text-chai-dark/80" th:text="#{dashboard.profile.wins}">Victorii</span>
+                            <span class="font-bold" th:text="${wins}">0</span>
+                        </div>
+                        <div class="flex justify-between border-b border-chai-dark/5 pb-4">
+                            <span class="text-chai-dark/80" th:text="#{dashboard.profile.losses}">Înfrângeri</span>
+                            <span class="font-bold" th:text="${losses}">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-chai-dark/80" th:text="#{dashboard.profile.logic}">Logică medie</span>
+                            <span class="font-bold text-chai-accent" th:text="${logicAccuracy}">N/A</span>
                         </div>
                     </div>
                 </div>
@@ -91,25 +126,93 @@
 
     <th:block th:fragment="scripts">
         <script th:inline="javascript">
-            /*<![CDATA[*/
-            const currentUserId = [[${currentUserId}]];
-
-            async function joinArena() {
-                const topic = "Is AI dangerous?"; 
-                const response = await fetch('/api/matches/join', {
+            window.i18n = {
+                errorGeneric: /*[[#{js.dashboard.error.generic('{0}')}]]*/ '',
+                matchmakingDisconnect: /*[[#{js.dashboard.matchmaking.disconnect('{0}')}]]*/ '',
+                noTopic: /*[[#{js.dashboard.noTopic}]]*/ '',
+                lobbyCreated: /*[[#{js.dashboard.lobbyCreated('{0}')}]]*/ ''
+            };
+            (function() {
+                const selected = /*[[${selectedGameMode}]]*/ null;
+                if (selected) {
+                    const sel = document.getElementById('mode-select');
+                    if (sel) sel.value = selected;
+                }
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('fromMatchmaking') === '1') {
+                    const opp = params.get('opponent') || 'adversarul';
+                    showStatus(window.i18n.matchmakingDisconnect.replace('{0}', opp), false);
+                }
+            })();
+        </script>
+        <script>
+            async function apiCall(url, body) {
+                const response = await fetch(url, {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: currentUserId, topic: topic, gameMode: 'STANDARD' })
+                    body: JSON.stringify(body)
                 });
+                const text = await response.text();
+                if (!response.ok) {
+                    let msg = window.i18n.errorGeneric.replace('{0}', response.status);
+                    try {
+                        const err = JSON.parse(text);
+                        if (err.error) msg = err.error;
+                    } catch (_) {
+                        if (text && text.length < 200) msg = text;
+                    }
+                    throw new Error(msg);
+                }
+                return JSON.parse(text);
+            }
 
-                if (response.ok) {
-                    const match = await response.json();
-                    window.location.href = '/arena/' + match.id;
-                } else {
-                    alert("Eroare la intrarea în matchmaking.");
+            function showStatus(msg, isError) {
+                const el = document.getElementById('lobby-status');
+                el.classList.remove('hidden');
+                el.textContent = msg;
+                el.className = 'mt-6 text-sm font-semibold ' + (isError ? 'text-red-300' : 'text-chai-accent');
+            }
+
+            async function createLobby() {
+                const btn = document.getElementById('btn-create-lobby');
+                btn.disabled = true;
+                try {
+                    const hidden = document.getElementById('topic-hidden');
+                    const topic = hidden ? hidden.value.trim() : '';
+                    if (!topic) {
+                        showStatus(window.i18n.noTopic, true);
+                        btn.disabled = false;
+                        return;
+                    }
+                    const match = await apiCall('/api/lobbies/create', {
+                        topic: topic,
+                        gameMode: document.getElementById('mode-select').value
+                    });
+                    showStatus(window.i18n.lobbyCreated.replace('{0}', match.joinCode), false);
+                    setTimeout(() => { window.location.href = '/arena/' + match.id; }, 1200);
+                } catch (e) {
+                    showStatus(e.message, true);
+                    btn.disabled = false;
                 }
             }
-            /*]]>*/
+
+            async function joinLobby() {
+                const btn = document.getElementById('btn-join-lobby');
+                const code = document.getElementById('lobby-code-input').value.trim();
+                btn.disabled = true;
+                try {
+                    const match = await apiCall('/api/lobbies/join', { code });
+                    window.location.href = '/arena/' + match.id;
+                } catch (e) {
+                    showStatus(e.message, true);
+                    btn.disabled = false;
+                }
+            }
+
+            document.getElementById('lobby-code-input')?.addEventListener('input', function () {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+            });
         </script>
     </th:block>
 </body>

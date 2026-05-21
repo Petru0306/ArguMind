@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← Toate lecțiile</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lecția 1</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Bazele argumentării
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                Un argument puternic nu înseamnă să vorbești tare — înseamnă să legi clar ideile, să susții cu dovezi și să anticipezi contra-argumentele.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Opinie vs. argument</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>Opinie:</strong> „Cred că educația online e mai bună.” — nu poate fi verificată direct.</p>
+                <p><strong>Argument:</strong> „Educația online reduce costurile cu 40% și permite acces la cursuri de la universități de top, ceea ce democratizează învățarea.” — are premisă, mecanism și concluzie.</p>
+            </div>
+            <div class="mt-6 p-4 bg-chai-bg rounded-xl border-l-4 border-chai-accent">
+                <p class="text-sm font-semibold text-chai-text">Regula de aur</p>
+                <p class="text-sm text-chai-dark/70 mt-1">Fiecare propoziție din argument trebuie să răspundă la „de ce?” sau „cum știm asta?”.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Structura PRO / CONTRA</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-5 bg-green-50/80 rounded-xl border border-green-200/60">
+                    <h3 class="font-bold text-green-900 mb-2">PRO</h3>
+                    <ul class="text-sm text-green-900/80 space-y-2 list-disc list-inside">
+                        <li>Definește poziția în 1 frază</li>
+                        <li>2–3 argumente principale</li>
+                        <li>Dovezi: studii, statistici, exemple</li>
+                        <li>Anticipează obiecția #1 și răspunde</li>
+                    </ul>
+                </div>
+                <div class="p-5 bg-red-50/80 rounded-xl border border-red-200/60">
+                    <h3 class="font-bold text-red-900 mb-2">CONTRA</h3>
+                    <ul class="text-sm text-red-900/80 space-y-2 list-disc list-inside">
+                        <li>Atacă premisa sau doveziile PRO</li>
+                        <li>Prezintă contra-exemple</li>
+                        <li>Arată costuri / riscuri ignorate</li>
+                        <li>Concluzionează de ce poziția PRO e incompletă</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Erori logice de evitat</h2>
+            <div class="space-y-3 text-sm">
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">01</span>
+                    <div><strong>Ad hominem</strong> — ataci persoana, nu ideea.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">02</span>
+                    <div><strong>Generalizare grăbită</strong> — „un caz = toate cazurile”.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">03</span>
+                    <div><strong>Falsă dilemă</strong> — „sau e A sau e B”, ignorând opțiuni intermediare.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">04</span>
+                    <div><strong>Apel la emoție</strong> — înlocuiește dovezi cu frică sau milă.</div>
+                </div>
+            </div>
+            <p class="mt-4 text-xs text-chai-dark/50">
+                Vezi catalogul complet în <a href="/fallacies" class="text-chai-accent font-bold">Erori logice</a>.
+            </p>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">4. Checklist înainte de meci</h2>
+            <ol class="space-y-3 text-sm text-chai-dark/85 list-decimal list-inside">
+                <li>Știu clar ce apăr (PRO sau CONTRA)?</li>
+                <li>Am 2 argumente cu dovezi concrete?</li>
+                <li>Am un contra-argument anticipat?</li>
+                <li>Evit atacuri la persoană și generalizări?</li>
+                <li>Concluzia mea urmează logic din premisă?</li>
+            </ol>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Pune în practică</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">Antrenează-te cu AI sau intră într-un meci real.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">Debate cu AI</a>
+                <a href="/login" sec:authorize="isAnonymous()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold">Login pentru AI</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Alege o temă</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

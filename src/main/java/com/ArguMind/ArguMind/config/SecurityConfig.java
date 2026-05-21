@@ -2,7 +2,6 @@ package com.ArguMind.ArguMind.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,10 +20,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Rămâne dezactivat pentru a ușura testele API/AJAX
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/api/auth/**", "/register", "/login", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/ws-arena/**").permitAll()
-                .requestMatchers("/arena/**", "/dashboard/**", "/api/matches/**").authenticated() 
+                .requestMatchers("/", "/about", "/fallacies", "/leaderboard", "/topics", "/lessons", "/lessons/**",
+                        "/player/**", "/register", "/login",
+                        "/api/auth/**", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                .requestMatchers("/ws-arena/**", "/arena/**", "/dashboard", "/profile", "/modes/**",
+                        "/ai-debate", "/api/ai-debate/**", "/api/friends/**", "/api/matches/**", "/api/lobbies/**")
+                .authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -33,7 +36,9 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
             )
-            .logout(logout -> logout.permitAll());
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll());
 
         return http.build();
     }

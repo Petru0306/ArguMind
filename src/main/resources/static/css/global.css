@@ -1,7 +1,4 @@
-/* 
-   ArguMind - Global Stylesheet
-   Premium Minimalist "Spiced Chai" System
-*/
+/* ArguMind - Spiced Chai global styles */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;600&display=swap');
 
@@ -9,15 +6,14 @@
     --accent: #D47E30;
     --text-main: #825E34;
     --bg-main: #FDFBD4;
+    --chai-dark: #8D5A2B;
     --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Base Reset & Typography */
-* {
-    margin: 0;
-    padding: 0;
+*,
+*::before,
+*::after {
     box-sizing: border-box;
-    transition: all 0.6s var(--ease-premium);
 }
 
 html {
@@ -25,6 +21,7 @@ html {
 }
 
 body {
+    margin: 0;
     font-family: 'Poppins', sans-serif;
     background-color: var(--bg-main);
     color: var(--text-main);
@@ -37,7 +34,6 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
 }
 
-/* Custom Premium Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -52,11 +48,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #8D5A2B;
+    background: var(--chai-dark);
 }
 
-/* Global Cursor Styles (Applied via JS) */
-#cursor-dot, #cursor-ring {
+#cursor-dot,
+#cursor-ring {
     position: fixed;
     pointer-events: none;
     z-index: 10000;
@@ -64,22 +60,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #cursor-dot {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     background-color: var(--text-main);
     border-radius: 50%;
 }
 
 #cursor-ring {
-    width: 35px;
-    height: 35px;
-    border: 1.5px solid var(--accent);
-    opacity: 0.15;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--accent);
+    opacity: 0.2;
     border-radius: 50%;
-    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
 }
 
-/* Animation Utilities */
 .reveal-text {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
@@ -98,7 +93,6 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Premium Navigation Elements */
 .nav-link-elite {
     position: relative;
     text-transform: uppercase;
@@ -106,6 +100,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     letter-spacing: 0.2em;
     opacity: 0.8;
+    transition: opacity 0.3s ease, color 0.3s ease;
 }
 
 .nav-link-elite:hover {
@@ -123,7 +118,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--accent);
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 0.6s var(--ease-premium);
+    transition: transform 0.4s var(--ease-premium);
 }
 
 .nav-link-elite:hover::after {
@@ -131,13 +126,145 @@ h1, h2, h3, h4, h5, h6 {
     transform-origin: left;
 }
 
-/* Form Styles */
-input {
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+input,
+textarea,
+button,
+a {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(194, 166, 135, 0.1);
+    box-shadow: 0 0 0 4px rgba(212, 126, 48, 0.12);
+}
+
+@media (min-width: 768px) {
+    body.has-custom-cursor {
+        cursor: none;
+    }
+    body.has-custom-cursor input,
+    body.has-custom-cursor textarea,
+    body.has-custom-cursor select {
+        cursor: text;
+    }
+}
+
+.hover-card {
+    transition: transform 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium),
+        border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(141, 90, 43, 0.08);
+}
+
+.topic-card-interactive {
+    display: block;
+    transition: transform 0.45s var(--ease-premium), background-color 0.35s ease,
+        border-color 0.35s ease, box-shadow 0.45s var(--ease-premium);
+    cursor: none;
+}
+
+.topic-card-interactive:hover {
+    transform: translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(212, 126, 48, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.btn-glow:hover {
+    box-shadow: 0 4px 12px rgba(212, 126, 48, 0.2);
+    transform: translateY(-1px);
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+    display: block;
+}
+
+.nav-dropdown-menu {
+    display: none;
+}
+
+.personality-chip {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.personality-chip.active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.chat-markdown p {
+    margin: 0.5em 0;
+}
+
+.chat-markdown p:first-child {
+    margin-top: 0;
+}
+
+.chat-markdown p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-markdown strong {
+    font-weight: 600;
+    color: var(--chai-dark);
+}
+
+.chat-markdown em {
+    font-style: italic;
+}
+
+.chat-markdown ul,
+.chat-markdown ol {
+    margin: 0.5em 0;
+    padding-left: 1.25rem;
+}
+
+.chat-markdown li {
+    margin: 0.25em 0;
+}
+
+.chat-markdown h1,
+.chat-markdown h2,
+.chat-markdown h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin: 0.75em 0 0.35em;
+    color: var(--chai-dark);
+}
+
+.chat-markdown code {
+    background: rgba(141, 90, 43, 0.08);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+#matchmaking-overlay {
+    backdrop-filter: blur(8px);
+}
+
+.match-pulse {
+    animation: matchPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes matchPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #cursor-dot,
+    #cursor-ring {
+        display: none;
+    }
+    .hover-card:hover,
+    .topic-card-interactive:hover {
+        transform: none;
+    }
 }

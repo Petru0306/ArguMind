@@ -82,4 +82,5 @@ Pentru a asigura consistența și originalitatea, proiectul folosește următoar
 - [x] **Etapa 7: Modul de Administrare & i18n (Suport limbi)**.
 - [x] **Etapa 8: Frontend Brut (Tailwind) - Landing, Login, Register**.
 - [x] **Etapa 9: Dashboard & Arena (WebSocket Integration)**.
+- [x] **Etapa 9b: Matchmaking waiting room, email register, UI/CSS fixes**.
 - [ ] **Etapa 10: LocalStorage, Text-to-Speech & Optimizări**.

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← All lessons</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lesson 1</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Argumentation basics
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                A strong argument does not mean speaking loudly — it means connecting ideas clearly, supporting them with evidence, and anticipating counter-arguments.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Opinion vs. argument</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>Opinion:</strong> “I think online education is better.” — cannot be verified directly.</p>
+                <p><strong>Argument:</strong> “Online education reduces costs by 40% and provides access to courses from top universities, which democratizes learning.” — has premise, mechanism, and conclusion.</p>
+            </div>
+            <div class="mt-6 p-4 bg-chai-bg rounded-xl border-l-4 border-chai-accent">
+                <p class="text-sm font-semibold text-chai-text">Golden rule</p>
+                <p class="text-sm text-chai-dark/70 mt-1">Every sentence in an argument must answer “why?” or “how do we know that?”.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. PRO / CONTRA structure</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-5 bg-green-50/80 rounded-xl border border-green-200/60">
+                    <h3 class="font-bold text-green-900 mb-2">PRO</h3>
+                    <ul class="text-sm text-green-900/80 space-y-2 list-disc list-inside">
+                        <li>Define your position in 1 sentence</li>
+                        <li>2–3 main arguments</li>
+                        <li>Evidence: studies, statistics, examples</li>
+                        <li>Anticipate objection #1 and respond</li>
+                    </ul>
+                </div>
+                <div class="p-5 bg-red-50/80 rounded-xl border border-red-200/60">
+                    <h3 class="font-bold text-red-900 mb-2">CONTRA</h3>
+                    <ul class="text-sm text-red-900/80 space-y-2 list-disc list-inside">
+                        <li>Attack the PRO premise or evidence</li>
+                        <li>Present counter-examples</li>
+                        <li>Show ignored costs / risks</li>
+                        <li>Conclude why the PRO position is incomplete</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Logical fallacies to avoid</h2>
+            <div class="space-y-3 text-sm">
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">01</span>
+                    <div><strong>Ad hominem</strong> — attacking the person, not the idea.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">02</span>
+                    <div><strong>Hasty generalization</strong> — “one case = all cases”.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">03</span>
+                    <div><strong>False dilemma</strong> — “either A or B”, ignoring middle options.</div>
+                </div>
+                <div class="flex gap-3 p-3 bg-chai-bg/60 rounded-lg">
+                    <span class="font-black text-chai-accent shrink-0">04</span>
+                    <div><strong>Appeal to emotion</strong> — replacing evidence with fear or pity.</div>
+                </div>
+            </div>
+            <p class="mt-4 text-xs text-chai-dark/50">
+                See the full catalog in <a href="/fallacies" class="text-chai-accent font-bold">Logical fallacies</a>.
+            </p>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">4. Pre-match checklist</h2>
+            <ol class="space-y-3 text-sm text-chai-dark/85 list-decimal list-inside">
+                <li>Do I clearly know what I am defending (PRO or CONTRA)?</li>
+                <li>Do I have 2 arguments with concrete evidence?</li>
+                <li>Do I have an anticipated counter-argument?</li>
+                <li>Am I avoiding personal attacks and generalizations?</li>
+                <li>Does my conclusion follow logically from the premise?</li>
+            </ol>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Put it into practice</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">Train with AI or join a real match.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">AI Debate</a>
+                <a href="/login" sec:authorize="isAnonymous()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold">Log in for AI</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Pick a topic</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

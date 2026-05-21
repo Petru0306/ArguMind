@@ -6,22 +6,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MatchResponseDto {
     private Long id;
+    private String joinCode;
     private String topic;
     private String status;
     private GameMode gameMode;
     private Integer initialTime; // Timpul în secunde conform modului
     private Long proUserId;
+    private Long proUser2Id;
     private Long contraUserId;
+    private Long contraUser2Id;
+    private Long currentTurnUserId;
     private Long winnerId;
-    private String currentTurn; // "PRO" sau "CONTRA"
+    private String currentTurn;
+    private Integer requiredPlayers;
+    private Integer playersJoined;
     private Integer roundNumber;
-    
+
+    private List<ArgumentViewDto> arguments;
+
     private Integer proEloChange;
     private Integer contraEloChange;
     private String proFeedback;

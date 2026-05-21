@@ -6,11 +6,14 @@ import com.ArguMind.ArguMind.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@org.springframework.transaction.annotation.Transactional
+@ActiveProfiles("test")
+@Transactional
 class UserServiceTests {
 
     @Autowired
@@ -18,11 +21,18 @@ class UserServiceTests {
 
     @Test
     void testCreateUser() {
-        String username = "mihai2718";
-        UserRegistrationResponseDto user = userService.registerUser(new UserRegistrationDto(username, "parola123"));
-        
+        String suffix = String.valueOf(System.currentTimeMillis());
+        UserRegistrationDto dto = UserRegistrationDto.builder()
+                .username("user_" + suffix)
+                .email("user_" + suffix + "@test.local")
+                .password("parola123")
+                .confirmPassword("parola123")
+                .build();
+
+        UserRegistrationResponseDto user = userService.registerUser(dto);
+
         assertNotNull(user.getId());
-        assertEquals(username, user.getUsername());
-        System.out.println("Utilizator creat cu succes: " + user.getUsername() + " cu ID: " + user.getId());
+        assertEquals(dto.getUsername(), user.getUsername());
+        assertEquals(dto.getEmail(), user.getEmail());
     }
 }

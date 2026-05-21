@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← All lessons</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lesson 2</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                The art of rebuttal: respond, don't repeat
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                The most common mistake in debate: reintroducing the same argument as if your opponent said nothing. A good rebuttal attacks the premise or evidence — not the tone.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. The PREL method (4 steps)</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>P</strong> — <em>Pick up</em> your opponent's idea in 1 sentence (“You say AI will take all jobs...”).</p>
+                <p><strong>R</strong> — <em>Reject</em> a premise or generalization (“...but automation also creates new roles — IT history shows this”).</p>
+                <p><strong>E</strong> — <em>Exemplify</em> with a concrete case (statistic, country, industry).</p>
+                <p><strong>L</strong> — <em>Link</em> back to your position (“So the real risk is not total unemployment, but reskilling — and we can plan for that”).</p>
+            </div>
+            <div class="mt-6 p-4 bg-red-50 rounded-xl border-l-4 border-red-400">
+                <p class="text-sm font-semibold text-red-900">Avoid</p>
+                <p class="text-sm text-red-800/80 mt-1">“That's not true” without saying <em>what</em> exactly is false and <em>why</em>.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Rebuttal types that score points</h2>
+            <div class="space-y-3 text-sm">
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Premise rebuttal</strong>
+                    <p class="text-chai-dark/70 mt-1">“You assume all students have internet at home — 2024 data shows 12% do not.”</p>
+                </div>
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Mechanism rebuttal</strong>
+                    <p class="text-chai-dark/70 mt-1">“You say banning plastic reduces pollution — but 80% comes from industry, not individual consumption.”</p>
+                </div>
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Priority rebuttal</strong>
+                    <p class="text-chai-dark/70 mt-1">“Even if you are partly right, cost X outweighs benefit Y — so it is not the best solution now.”</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Quick exercise (60 sec)</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                Read the argument: <em>“Schools must ban phones because students no longer concentrate.”</em>
+                Write a PREL rebuttal without attacking students (“they are lazy”) — attack the link between concentration and banning.
+            </p>
+            <div class="p-4 bg-chai-accent/10 rounded-xl text-sm italic text-chai-dark/70">
+                Example: “You say lack of concentration comes from phones — but studies show short breaks can improve retention; the problem is use during explanations, not the phone's existence.”
+            </div>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Practice rebuttals live</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">In a match you have limited time — train PREL structure with the AI coach.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">AI Debate</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Enter the arena</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

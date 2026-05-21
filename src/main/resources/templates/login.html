@@ -6,11 +6,14 @@
         <div class="max-w-md w-full bg-white p-10 rounded-3xl border border-chai-dark/10 shadow-xl">
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-heading font-bold text-chai-text" th:text="#{auth.login.title}">Autentificare</h2>
-                <p class="text-chai-dark/60 mt-2">Bine ai revenit în arenă!</p>
+                <p class="text-chai-dark/60 mt-2" th:text="#{auth.login.subtitle}">Bine ai revenit în arenă!</p>
             </div>
 
-            <!-- Error Message -->
-            <div th:if="${param.error}" class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+            <div th:if="${param.success}" class="mb-6 p-4 bg-green-50 border border-green-300 text-green-800 text-sm rounded-xl text-center"
+                 th:text="#{auth.register.success}">
+                Cont creat cu succes. Te poți autentifica acum.
+            </div>
+            <div th:if="${param.error}" class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-xl">
                 <p th:text="#{error.auth.failed}">Date de autentificare incorecte.</p>
             </div>
 
@@ -19,7 +22,7 @@
                     <label for="username" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.login.username}">Username</label>
                     <input type="text" id="username" name="username" required
                            class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 focus:border-chai-accent focus:ring-2 focus:ring-chai-accent/20 outline-none transition-all"
-                           placeholder="ex: mihai2718">
+                           th:placeholder="#{auth.register.placeholder.username}">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.login.password}">Parolă</label>
@@ -35,7 +38,7 @@
             </form>
 
             <div class="mt-8 text-center text-sm">
-                <span class="text-chai-dark/60">Nu ai un cont?</span>
+                <span class="text-chai-dark/60" th:text="#{auth.login.noAccount}">Nu ai cont?</span>
                 <a href="/register" class="text-chai-accent font-bold hover:underline ml-1" th:text="#{auth.register.title}">Creează unul</a>
             </div>
         </div>

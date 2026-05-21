@@ -1,0 +1,53 @@
+@media print {
+    nav,
+    footer,
+    #results-waiting,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: #333 !important;
+        font-size: 11pt;
+    }
+
+    main {
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+
+    #print-report {
+        display: block !important;
+        max-width: 100%;
+        margin: 0;
+        padding: 16pt;
+    }
+
+    .print-section {
+        margin-bottom: 14pt;
+        border: 1px solid #ccc;
+        padding: 12pt;
+        border-radius: 6pt;
+        page-break-inside: avoid;
+    }
+
+    .print-bar {
+        height: 6pt;
+        background: #D47E30;
+        border-radius: 3pt;
+        margin-bottom: 12pt;
+    }
+
+    .print-fallacy {
+        border-left: 4pt solid #c53030;
+        padding-left: 10pt;
+        margin-bottom: 8pt;
+    }
+}
+
+@media screen {
+    #print-report {
+        display: none;
+    }
+}

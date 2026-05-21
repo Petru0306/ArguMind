@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-12 px-4">
+    <div class="max-w-4xl mx-auto text-center mb-12">
+        <h1 class="text-4xl font-heading font-bold text-chai-text mb-3" th:text="#{lessons.index.title}">Lecții ArguMind</h1>
+        <p class="text-chai-dark/70 text-lg" th:text="#{lessons.index.subtitle}">5 module practice — de la structură la replici, dovezi și retorică clară.</p>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-5">
+        <a href="/lessons/argumentare"
+           class="block bg-white rounded-3xl border-2 border-chai-accent/30 shadow-xl p-8 md:p-10 hover-card text-left group">
+            <span class="text-xs font-bold uppercase tracking-widest text-chai-accent" th:text="#{lessons.index.1.tag}">Lecția 1 · Fundamente</span>
+            <h2 class="text-2xl font-heading font-bold text-chai-text mt-2 mb-3 group-hover:text-chai-accent transition-colors" th:text="#{lessons.index.1.title}">
+                Bazele argumentării: de la opinie la demonstrație
+            </h2>
+            <p class="text-chai-dark/70 text-sm leading-relaxed mb-4" th:text="#{lessons.index.1.desc}">
+                Structura PRO/CONTRA, premisa, dovezi, erori logice frecvente și checklist înainte de un meci.
+            </p>
+            <span class="inline-flex items-center gap-2 text-chai-accent font-bold text-sm" th:text="#{lessons.index.1.link}">Începe lecția →</span>
+        </a>
+
+        <a href="/lessons/replica"
+           class="block bg-white rounded-3xl border border-chai-dark/10 shadow-lg p-8 hover-card text-left group">
+            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/40" th:text="#{lessons.index.2.tag}">Lecția 2 · Replici</span>
+            <h2 class="text-xl font-heading font-bold text-chai-text mt-2 mb-2 group-hover:text-chai-accent transition-colors" th:text="#{lessons.index.2.title}">
+                Arta replicii: răspunde, nu repeta
+            </h2>
+            <p class="text-chai-dark/70 text-sm leading-relaxed" th:text="#{lessons.index.2.desc}">
+                Metoda PREL, tipuri de replici (premisă, mecanism, prioritate) și exercițiu de 60 de secunde.
+            </p>
+        </a>
+
+        <a href="/lessons/anticipare"
+           class="block bg-white rounded-3xl border border-chai-dark/10 shadow-lg p-8 hover-card text-left group">
+            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/40" th:text="#{lessons.index.3.tag}">Lecția 3 · Strategie</span>
+            <h2 class="text-xl font-heading font-bold text-chai-text mt-2 mb-2 group-hover:text-chai-accent transition-colors" th:text="#{lessons.index.3.title}">
+                Gândește ca adversarul: anticiparea în 2 minute
+            </h2>
+            <p class="text-chai-dark/70 text-sm leading-relaxed" th:text="#{lessons.index.3.desc}">
+                Harta celor 3 atacuri, tehnica steelman și pachetul de pregătire rapidă înainte de arenă.
+            </p>
+        </a>
+
+        <a href="/lessons/dovezi"
+           class="block bg-white rounded-3xl border border-chai-dark/10 shadow-lg p-8 hover-card text-left group">
+            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/40" th:text="#{lessons.index.4.tag}">Lecția 4 · Dovezi</span>
+            <h2 class="text-xl font-heading font-bold text-chai-text mt-2 mb-2 group-hover:text-chai-accent transition-colors" th:text="#{lessons.index.4.title}">
+                Piramida dovezilor: ce convinge arbitrul AI
+            </h2>
+            <p class="text-chai-dark/70 text-sm leading-relaxed" th:text="#{lessons.index.4.desc}">
+                Ierarhia dovezilor, formula într-o propoziție, onestitate când lipsesc studiile — fără procente inventate.
+            </p>
+        </a>
+
+        <a href="/lessons/retorica"
+           class="block bg-white rounded-3xl border border-chai-dark/10 shadow-lg p-8 hover-card text-left group">
+            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/40" th:text="#{lessons.index.5.tag}">Lecția 5 · Retorică</span>
+            <h2 class="text-xl font-heading font-bold text-chai-text mt-2 mb-2 group-hover:text-chai-accent transition-colors" th:text="#{lessons.index.5.title}">
+                Claritate și impact: retorică fără manipulare
+            </h2>
+            <p class="text-chai-dark/70 text-sm leading-relaxed" th:text="#{lessons.index.5.desc}">
+                Regula celor 3 idei, hook-uri corecte, cuvinte precise și închideri memorabile pentru scor la claritate.
+            </p>
+        </a>
+    </div>
+</main>
+</body>
+</html>

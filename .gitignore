@@ -1,5 +1,9 @@
 HELP.md
 target/
+
+# Secrets & config local
+src/main/resources/application-secrets.properties
+src/main/resources/application-local.properties
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

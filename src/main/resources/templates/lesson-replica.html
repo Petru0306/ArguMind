@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← Toate lecțiile</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lecția 2</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Arta replicii: răspunde, nu repeta
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                Cea mai frecventă greșeală în debat: reintroduci același argument ca și cum adversarul n-ar fi spus nimic. Replica bună atacă premisa sau dovada — nu tonul.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Metoda PREL (4 pași)</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>P</strong> — <em>Preia</em> ideea adversarului în 1 frază („Spui că AI-ul va lua toate joburile...”).</p>
+                <p><strong>R</strong> — <em>Respinge</em> o premisă sau o generalizare („...dar automatizarea creează și roluri noi — istoricul IT arată asta”).</p>
+                <p><strong>E</strong> — <em>Exemplifică</em> cu un caz concret (statistică, țară, industrie).</p>
+                <p><strong>L</strong> — <em>Leagă</em> înapoi la poziția ta („Deci riscul real nu e șomaj total, ci reconversie — și asta putem planifica”).</p>
+            </div>
+            <div class="mt-6 p-4 bg-red-50 rounded-xl border-l-4 border-red-400">
+                <p class="text-sm font-semibold text-red-900">Evită</p>
+                <p class="text-sm text-red-800/80 mt-1">„Nu e adevărat ce zici” fără să spui <em>ce</em> anume e fals și <em>de ce</em>.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Tipuri de replici care câștigă puncte</h2>
+            <div class="space-y-3 text-sm">
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Replica de premisă</strong>
+                    <p class="text-chai-dark/70 mt-1">„Presupui că toți elevii au internet acasă — datele din 2024 arată că 12% nu au.”</p>
+                </div>
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Replica de mecanism</strong>
+                    <p class="text-chai-dark/70 mt-1">„Spui că interzicerea plasticului reduce poluarea — dar 80% vine din industrie, nu din consum individual.”</p>
+                </div>
+                <div class="p-4 bg-chai-bg/60 rounded-xl">
+                    <strong class="text-chai-text">Replica de prioritate</strong>
+                    <p class="text-chai-dark/70 mt-1">„Chiar dacă ai dreptate parțial, costul X depășește beneficiul Y — deci nu e cea mai bună soluție acum.”</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Exercițiu rapid (60 sec)</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                Citește argumentul: <em>„Școlile trebuie să interzică telefoanele pentru că elevii nu se mai concentrează.”</em>
+                Scrie o replică PREL fără să ataci elevii („sunt leneși”) — atacă legătura concentrare ↔ interzicere.
+            </p>
+            <div class="p-4 bg-chai-accent/10 rounded-xl text-sm italic text-chai-dark/70">
+                Exemplu: „Spui că lipsa concentrării vine de la telefon — dar studiile arată că pauzele scurte pot crește retenția; problema e folosirea în timpul explicației, nu existența telefonului.”
+            </div>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Exersează replici live</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">În meci, ai timp limitat — antrenează structura PREL cu coach-ul AI.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">Debate cu AI</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Intră în arenă</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

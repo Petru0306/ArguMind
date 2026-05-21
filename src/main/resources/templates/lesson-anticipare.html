@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← Toate lecțiile</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lecția 3</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Gândește ca adversarul: anticiparea în 2 minute
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                Debaterii buni nu sunt „mai deștepți” — sunt mai pregătiți. Înainte să vorbești, îți imaginezi ce ar spune cealaltă parte și pregătești răspunsul.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Harta celor 3 atacuri probabile</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                Pentru orice temă, adversarul va folosi de obicei una din aceste strategii:
+            </p>
+            <ul class="text-sm space-y-2 list-disc list-inside text-chai-dark/85">
+                <li><strong>Atac la premisă</strong> — „datele tale sunt vechi / incomplete”</li>
+                <li><strong>Atac la relevanță</strong> — „exemplul tău e izolat, nu reprezintă regula”</li>
+                <li><strong>Atac la cost</strong> — „soluția ta e prea scumpă / periculoasă / lentă”</li>
+            </ul>
+            <div class="mt-6 p-4 bg-chai-bg rounded-xl border-l-4 border-chai-accent">
+                <p class="text-sm font-semibold text-chai-text">Sfat ArguMind</p>
+                <p class="text-sm text-chai-dark/70 mt-1">Notează pe hârtie 3 fraze pe care le-ai folosi dacă ai fi în echipa opusă — apoi răspunde la fiecare în 2 propoziții.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Tehnica „Steelman” (opusul strawman)</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>Strawman</strong> — îți creezi un adversar slab ca să-l bați ușor. Juriul și AI-ul observă.</p>
+                <p><strong>Steelman</strong> — formulezi cea mai puternică versiune a argumentului opus, apoi arăți de ce tot poziția ta e superioară. Asta inspiră respect și câștigă puncte la logică.</p>
+            </div>
+            <div class="mt-4 p-5 bg-chai-dark/5 rounded-xl text-sm">
+                <p class="font-bold text-chai-text mb-2">Exemplu (tema: energie nucleară)</p>
+                <p class="text-chai-dark/75 italic">„Chiar dacă nucleara e eficientă, riscul de accident și depozitarea deșeurilor pe generații sunt argumente serioase — și ele merită răspuns, nu ignorare.”</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Pachetul de 2 minute înainte de meci</h2>
+            <ol class="space-y-3 text-sm text-chai-dark/85 list-decimal list-inside">
+                <li>Scrie poziția ta în <strong>maxim 12 cuvinte</strong>.</li>
+                <li>Listează <strong>2 argumente</strong> + o dovadă pentru fiecare.</li>
+                <li>Scrie <strong>1 contra-argument</strong> pe care îl aștepți și răspunsul tău scurt.</li>
+                <li>Alege <strong>1 frază de închidere</strong> memorabilă (fără emoție exagerată).</li>
+            </ol>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Simulează adversarul</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">Modul „Avocatul Diavolului” la Debate cu AI te forțează să răspunzi la contra-argumente dure.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">Debate cu AI</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Alege o temă</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

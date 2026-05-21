@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← Toate lecțiile</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lecția 5</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Claritate și impact: retorică fără manipulare
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                Scorul la „Claritate &amp; Retorică” nu înseamnă să fii poet — înseamnă să fii ușor de urmărit, memorabil și corect. Emoția e condiment, nu felul principal.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Regula celor 3 idei</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                Creierul audientului reține ~3 puncte. Structura câștigătoare:
+            </p>
+            <div class="grid gap-3 text-sm">
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Deschidere</strong> — poziția în 1 frază + de ce contează tema</div>
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Miez</strong> — 2 argumente (nu 7), fiecare cu o dovadă</div>
+                <div class="p-4 bg-chai-bg rounded-xl"><strong>Închidere</strong> — reafirmă poziția + răspunde la cea mai puternică obiecție</div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. Hook-uri care nu sunt manipulare</h2>
+            <div class="space-y-4 text-sm text-chai-dark/85">
+                <div class="p-4 border-l-4 border-green-400 bg-green-50/50 rounded-r-xl">
+                    <strong class="text-green-900">Bun</strong> — întrebare reală: „Ce se întâmplă cu democrația când știrile sunt filtrate de algoritmi?”
+                </div>
+                <div class="p-4 border-l-4 border-green-400 bg-green-50/50 rounded-r-xl">
+                    <strong class="text-green-900">Bun</strong> — contrast: „Vrem libertate de exprimare — dar acceptăm moderarea automată zilnic.”
+                </div>
+                <div class="p-4 border-l-4 border-red-400 bg-red-50/50 rounded-r-xl">
+                    <strong class="text-red-900">Riscant</strong> — frică fără date: „Copiii noștri vor trăi într-o dictatură digitală.”
+                </div>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. Fraze scurte, cuvinte precise</h2>
+            <table class="w-full text-sm mt-2">
+                <thead>
+                <tr class="text-left text-chai-dark/50 border-b border-chai-dark/10">
+                    <th class="pb-2">În loc de</th>
+                    <th class="pb-2">Încearcă</th>
+                </tr>
+                </thead>
+                <tbody class="text-chai-dark/85">
+                <tr class="border-b border-chai-dark/5"><td class="py-2">„foarte multe probleme”</td><td class="py-2">„trei riscuri principale”</td></tr>
+                <tr class="border-b border-chai-dark/5"><td class="py-2">„în general oamenii cred”</td><td class="py-2">„sondajul X arată că 62%...”</td></tr>
+                <tr><td class="py-2">„este clar că”</td><td class="py-2">„din premisa A urmează B”</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">4. Închiderea care rămâne</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                Ultima frază nu introduce idei noi — rezumă și oferă o alegere clară:
+            </p>
+            <blockquote class="border-l-4 border-chai-accent pl-4 italic text-chai-dark/75 text-sm">
+                „Dacă acceptăm că [premisa comună], atunci [poziția ta] e singura care rezolvă [problema] fără [costul major]. Asta propun — și asta apăr.”
+            </blockquote>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Pune totul cap la cap</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">Ai parcurs cele 5 lecții — intră într-un meci Standard și aplică structura.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/lessons" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Recapitulare lecții</a>
+                <a href="/topics" class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">Alege o temă</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>

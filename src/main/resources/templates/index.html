@@ -1,211 +1,108 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{::scripts})}">
-<body class="overflow-hidden"> <!-- Prevent scroll during splash -->
-    <main>
-        <!-- Premium Cinematic Splash Screen -->
-        <div id="splash-screen" class="fixed inset-0 z-[9999] bg-[#FAFAFA] flex flex-col items-center justify-center overflow-hidden">
-            <div id="splash-content" class="text-center">
-                <!-- Icon Reveal -->
-                <div id="splash-logo" class="mb-8 opacity-0 transform scale-[0.9] transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
-                    <img th:src="@{/images/favicon.png}" alt="Logo" class="w-24 h-24 rounded-full mx-auto shadow-2xl shadow-accent/20">
-                </div>
-                <!-- Kinetic Typography -->
-                <div class="overflow-hidden mb-2">
-                    <h1 id="splash-title" class="text-4xl font-heading font-bold tracking-tighter text-text-main transform translate-y-full opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" th:text="#{landing.title}">
-                        ArguMind
-                    </h1>
-                </div>
-                <div class="overflow-hidden">
-                    <p id="splash-slogan" class="text-[10px] uppercase tracking-[0.5em] text-accent font-bold transform translate-y-full opacity-0 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]" th:text="#{landing.slogan}">
-                        Arta de a convinge
-                    </p>
-                </div>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main>
+    <section class="py-16 md:py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <p class="text-sm font-bold uppercase tracking-widest text-chai-accent mb-4" th:text="#{home.hero.badge}">Platformă de debate cu AI Judge</p>
+            <h1 class="text-3xl md:text-5xl font-heading font-bold text-chai-text leading-tight mb-6" th:text="#{home.hero.title}">
+                Arta de a convinge prin argumente clare
+            </h1>
+            <p class="text-lg md:text-xl text-chai-dark/80 max-w-2xl mx-auto mb-10 leading-relaxed" th:text="#{home.hero.subtitle}">
+                Dueluri PRO vs CONTRA, lobby cu cod, arbitraj Gemini, antrenament cu AI Coach și clasament ELO.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a sec:authorize="isAuthenticated()" href="/dashboard"
+                   class="bg-chai-accent text-white px-8 py-4 rounded-full text-base font-bold btn-glow shadow-lg hover-card inline-block" th:text="#{home.hero.cta.dashboard}">Intră în Dashboard</a>
+                <a sec:authorize="isAnonymous()" href="/register"
+                   class="bg-chai-accent text-white px-8 py-4 rounded-full text-base font-bold btn-glow shadow-lg hover-card inline-block" th:text="#{home.hero.cta.register}">Creează cont gratuit</a>
+                <a href="/topics" class="border-2 border-chai-dark/20 px-8 py-4 rounded-full text-base font-semibold hover:border-chai-accent hover-card inline-block" th:text="#{home.hero.cta.topics}">Explorează temele</a>
             </div>
         </div>
+    </section>
 
-        <!-- Hero Section -->
-        <section class="min-h-screen flex items-center justify-center pt-20 px-4 overflow-hidden">
-            <div class="max-w-5xl mx-auto text-center">
-                <div class="mb-6 overflow-hidden">
-                    <span class="block text-[10px] uppercase tracking-[0.6em] text-accent font-bold opacity-0 animate-[fadeIn_1s_ease_0.2s_forwards]" 
-                          th:text="#{landing.title}">ARGUMIND</span>
-                </div>
-                <h1 class="text-6xl md:text-8xl font-heading font-bold mb-10 leading-[1.05] reveal-text">
-                    <span id="slogan-container" class="block" th:attr="data-text=#{landing.slogan}"></span>
-                </h1>
-                
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-12 mt-16 opacity-0 animate-[fadeIn_1s_ease_1.8s_forwards]">
-                    <a href="/login" class="bg-accent text-white px-12 py-5 rounded-full text-[10px] uppercase tracking-widest font-bold hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-accent/40 transition-all duration-500"
-                       th:text="#{landing.cta.enter}">
-                        Intră în Arenă
-                    </a>
-                    <a href="#modes" class="nav-link-elite border-b border-transparent"
-                       th:text="#{landing.cta.modes}">
-                        Vezi Moduri de Joc
-                    </a>
-                </div>
+    <section class="py-12 bg-white border-y border-chai-dark/10">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="hover-card p-4 rounded-2xl"><span class="text-3xl font-heading font-bold text-chai-accent" th:text="${topicCount}">30</span><p class="text-sm text-chai-dark/70 mt-1" th:text="#{home.stats.topics}">Teme de dezbatere</p></div>
+            <div class="hover-card p-4 rounded-2xl"><span class="text-3xl font-heading font-bold text-chai-accent">AI</span><p class="text-sm text-chai-dark/70 mt-1" th:text="#{home.stats.ai}">Coach + Judge</p></div>
+            <div class="hover-card p-4 rounded-2xl"><span class="text-3xl font-heading font-bold text-chai-accent">ELO</span><p class="text-sm text-chai-dark/70 mt-1" th:text="#{home.stats.elo}">Clasament live</p></div>
+            <div class="hover-card p-4 rounded-2xl"><span class="text-3xl font-heading font-bold text-chai-accent">2v2</span><p class="text-sm text-chai-dark/70 mt-1" th:text="#{home.stats.teams}">Echipe</p></div>
+        </div>
+    </section>
+
+    <section class="py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-center mb-3" th:text="#{home.how.title}">Cum joci</h2>
+            <p class="text-center text-chai-dark/70 mb-10 text-base" th:text="#{home.how.subtitle}">Lobby privat, matchmaking sau antrenament cu AI.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="/topics" class="bg-white p-8 rounded-2xl border-2 border-chai-dark/10 hover:border-chai-accent shadow-md hover-card block">
+                    <h3 class="text-xl font-heading font-bold mb-2" th:text="#{home.how.card1.title}">Teme &amp; Lobby</h3>
+                    <p class="text-sm text-chai-dark/70 mb-4" th:text="#{home.how.card1.desc}">Alege tema, creează cod sau folosește matchmaking.</p>
+                    <span class="text-sm font-bold text-chai-accent" th:text="#{home.how.card1.link}">Vezi temele →</span>
+                </a>
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-white p-8 rounded-2xl border-2 border-chai-accent shadow-lg hover-card block">
+                    <h3 class="text-xl font-heading font-bold mb-2" th:text="#{home.how.card2.title}">Debate cu AI</h3>
+                    <p class="text-sm text-chai-dark/70 mb-4" th:text="#{home.how.card2.desc}">Exersează argumentarea cu un coach Gemini.</p>
+                    <span class="text-sm font-bold text-chai-accent" th:text="#{home.how.card2.link}">Antrenament →</span>
+                </a>
+                <a href="/login" sec:authorize="isAnonymous()"
+                   class="bg-white p-8 rounded-2xl border-2 border-chai-accent shadow-lg hover-card block">
+                    <h3 class="text-xl font-heading font-bold mb-2" th:text="#{home.how.card2.title}">Debate cu AI</h3>
+                    <p class="text-sm text-chai-dark/70 mb-4" th:text="#{home.how.card2.login.desc}">Login pentru antrenament 1v1 cu AI.</p>
+                    <span class="text-sm font-bold text-chai-accent" th:text="#{home.how.card2.login.link}">Login →</span>
+                </a>
+                <a href="/leaderboard" class="bg-white p-8 rounded-2xl border-2 border-chai-dark/10 hover:border-chai-accent shadow-md hover-card block">
+                    <h3 class="text-xl font-heading font-bold mb-2" th:text="#{home.how.card3.title}">Leaderboard</h3>
+                    <p class="text-sm text-chai-dark/70 mb-4" th:text="#{home.how.card3.desc}">Vezi clasamentul și profilurile publice.</p>
+                    <span class="text-sm font-bold text-chai-accent" th:text="#{home.how.card3.link}">Clasament →</span>
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Stats Section -->
-        <section class="py-32 border-y border-[#EAE6E1] bg-white">
-            <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-20">
-                <div class="flex flex-col items-center">
-                    <span class="text-6xl font-heading font-bold text-accent mb-4">1,240+</span>
-                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.duels}">Dueluri Astăzi</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-6xl font-heading font-bold text-accent mb-4">5.2s</span>
-                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.time}">Timp Mediu Arbitraj AI</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-6xl font-heading font-bold text-accent mb-4">850</span>
-                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold opacity-40" th:text="#{landing.stats.active}">Debateri Activi</span>
-                </div>
+    <section class="py-16 px-4 bg-chai-dark text-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+                <h2 class="text-2xl font-heading font-bold" th:text="#{home.popular.title}">Teme populare</h2>
+                <a href="/topics" class="text-sm font-bold text-chai-accent hover:underline hover-card inline-block px-2 py-1" th:text="#{home.popular.viewAll}">
+                    Vezi toate temele →
+                </a>
             </div>
-        </section>
-
-        <!-- Game Modes Section -->
-        <section id="modes" class="py-40 px-6">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-32">
-                    <h2 class="text-4xl font-heading font-bold uppercase tracking-widest" th:text="#{landing.modes.title}">Alege Modul de Luptă</h2>
-                    <div class="w-16 h-[1px] bg-accent mx-auto mt-8 opacity-30"></div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <!-- Blitz -->
-                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
-                        <div class="card-content">
-                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.blitz.title}">Blitz</h3>
-                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.blitz.desc}">2 minute pe rundă. Gândește repede, lovește precis.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.blitz.time}">2 MIN / TURN</span>
-                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
-                        </div>
-                    </div>
-
-                    <!-- Rapid -->
-                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
-                        <div class="card-content">
-                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.rapid.title}">Rapid</h3>
-                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.rapid.desc}">5 minute pe rundă. Echilibru perfect între viteză și structură.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.rapid.time}">5 MIN / TURN</span>
-                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
-                        </div>
-                    </div>
-
-                    <!-- Standard -->
-                    <div class="card-parallax group bg-white p-14 rounded-[2rem] border border-[#F0EDE9] cursor-pointer relative overflow-hidden h-[500px] flex flex-col justify-between hover:border-accent transition-all duration-700">
-                        <div class="card-content">
-                            <div class="mb-10 opacity-30 group-hover:opacity-100 group-hover:text-accent transition-all duration-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <h3 class="text-3xl font-heading font-bold mb-6 tracking-tight" th:text="#{landing.modes.standard.title}">Standard</h3>
-                            <p class="text-sm leading-loose opacity-40 group-hover:opacity-100 transition-opacity duration-700" th:text="#{landing.modes.standard.desc}">10 minute pe rundă. Pentru analize profunde și dovezi complexe.</p>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-[10px] font-bold tracking-[0.2em] opacity-30 group-hover:opacity-60 transition-opacity" th:text="#{landing.modes.standard.time}">10 MIN / TURN</span>
-                            <span class="action-label text-accent font-bold text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">Selectează →</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a th:each="t : ${featuredTopics}"
+                   th:href="@{/topics}"
+                   class="topic-card-interactive bg-white/10 rounded-xl p-4 border border-white/10">
+                    <span class="text-xs font-bold uppercase text-chai-accent" th:text="${t.getDisplayCategory(#locale)}">Cat</span>
+                    <p class="mt-2 text-sm leading-relaxed" th:text="${t.getDisplayTitle(#locale)}">Tema</p>
+                </a>
             </div>
-        </section>
+            <p class="text-center mt-8" th:if="${topicCount > 6}">
+                <a href="/topics" class="text-white/80 hover:text-chai-accent font-semibold text-sm hover-card inline-block px-4 py-2 rounded-full border border-white/20"
+                   th:text="#{home.popular.moreTopics(${topicCount - 6})}">
+                    + alte teme — explorează catalogul complet
+                </a>
+            </p>
+        </div>
+    </section>
 
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(30px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        </style>
-    </main>
-
-    <th:block th:fragment="scripts">
-        <script>
-            // Splash Screen Logic
-            (function() {
-                const splash = document.getElementById('splash-screen');
-                const logo = document.getElementById('splash-logo');
-                const title = document.getElementById('splash-title');
-                const slogan = document.getElementById('splash-slogan');
-                
-                if (sessionStorage.getItem('hasSeenSplash')) {
-                    splash.style.display = 'none';
-                    document.body.classList.remove('overflow-hidden');
-                } else {
-                    // Start Animation Sequence
-                    setTimeout(() => {
-                        logo.style.opacity = '1';
-                        logo.style.transform = 'scale(1)';
-                    }, 100);
-
-                    setTimeout(() => {
-                        title.style.opacity = '1';
-                        title.style.transform = 'translateY(0)';
-                    }, 500);
-
-                    setTimeout(() => {
-                        slogan.style.opacity = '1';
-                        slogan.style.transform = 'translateY(0)';
-                    }, 700);
-
-                    setTimeout(() => {
-                        splash.style.transform = 'translateY(-100%)';
-                        splash.style.opacity = '0';
-                        splash.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
-                        document.body.classList.remove('overflow-hidden');
-                        sessionStorage.setItem('hasSeenSplash', 'true');
-                    }, 2500);
-                }
-            })();
-
-            // Text Reveal Logic
-            const sloganContainer = document.getElementById('slogan-container');
-            if (sloganContainer) {
-                const sloganText = sloganContainer.getAttribute('data-text');
-                const words = sloganText.split(' ');
-                sloganContainer.innerHTML = words.map((word, i) => `
-                    <span class="reveal-text inline-block overflow-hidden mr-4">
-                        <span class="reveal-word" style="animation-delay: ${0.4 + (i * 0.1)}s">${word}</span>
-                    </span>
-                `).join('');
-            }
-
-            // Subtle Mouse Tilt for Cards
-            document.querySelectorAll('.card-parallax').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = (y - centerY) / 35;
-                    const rotateY = (centerX - x) / 35;
-                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `rotateX(0) rotateY(0)`;
-                });
-            });
-        </script>
-    </th:block>
+    <section class="py-16 px-4 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 hover-card">
+                <h3 class="font-heading font-bold text-lg mb-2" th:text="#{home.features.lobby.title}">Lobby cu cod</h3>
+                <p class="text-sm text-chai-dark/80" th:text="#{home.features.lobby.desc}">Creezi o cameră, trimiți codul de 6 caractere, prietenul intră.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 hover-card">
+                <h3 class="font-heading font-bold text-lg mb-2" th:text="#{home.features.matchmaking.title}">Matchmaking</h3>
+                <p class="text-sm text-chai-dark/80" th:text="#{home.features.matchmaking.desc}">Căutare adversar cu animație live — apoi lobby rapid pe tema aleasă.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-chai-dark/10 hover-card">
+                <h3 class="font-heading font-bold text-lg mb-2" th:text="#{home.features.ai.title}">AI Judge + Coach</h3>
+                <p class="text-sm text-chai-dark/80" th:text="#{home.features.ai.desc}">Gemini arbitrează meciurile și te antrenează în modul Debate cu AI.</p>
+            </div>
+        </div>
+    </section>
+</main>
 </body>
 </html>

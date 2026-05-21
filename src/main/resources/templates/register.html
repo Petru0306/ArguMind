@@ -2,28 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
 <body>
-    <main class="flex items-center justify-center py-20 px-4">
+    <main class="flex items-center justify-center py-12 px-4">
         <div class="max-w-md w-full bg-white p-10 rounded-3xl border border-chai-dark/10 shadow-xl">
             <div class="text-center mb-10">
                 <h2 class="text-3xl font-heading font-bold text-chai-text" th:text="#{auth.register.title}">Creează cont</h2>
-                <p class="text-chai-dark/60 mt-2">Alătură-te celei mai mari comunități de debateri!</p>
+                <p class="text-chai-dark/60 mt-2" th:text="#{auth.register.subtitle}">Alătură-te comunității de debateri ArguMind</p>
             </div>
 
-            <form th:action="@{/register}" method="post" class="space-y-6">
+            <p th:if="${errorKey}" th:text="#{${errorKey}}"
+               class="mb-4 rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-center text-sm text-red-700"></p>
+            <p th:if="${error}" th:text="${error}"
+               class="mb-4 rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-center text-sm text-red-700"></p>
+
+            <form th:action="@{/register}" method="post" class="space-y-5">
                 <div>
                     <label for="username" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.login.username}">Username</label>
-                    <input type="text" id="username" name="username" required
-                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 focus:border-chai-accent focus:ring-2 focus:ring-chai-accent/20 outline-none transition-all"
-                           placeholder="ex: mihai2718">
+                    <input type="text" id="username" name="username" required autocomplete="username"
+                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 outline-none"
+                           th:placeholder="#{auth.register.placeholder.username}">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.register.email}">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email"
+                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 outline-none"
+                           th:placeholder="#{auth.register.placeholder.email}">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.login.password}">Parolă</label>
-                    <input type="password" id="password" name="password" required
-                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 focus:border-chai-accent focus:ring-2 focus:ring-chai-accent/20 outline-none transition-all"
-                           placeholder="Minim 8 caractere">
+                    <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password"
+                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 outline-none"
+                           th:placeholder="#{auth.register.placeholder.password}">
+                </div>
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-semibold text-chai-text mb-2" th:text="#{auth.register.confirmPassword}">Confirmă parola</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required minlength="8" autocomplete="new-password"
+                           class="w-full px-4 py-3 rounded-xl border border-chai-dark/20 outline-none"
+                           th:placeholder="#{auth.register.placeholder.confirm}">
                 </div>
                 <button type="submit" 
-                        class="w-full bg-chai-accent text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg shadow-chai-accent/20 transition-all"
+                        class="w-full bg-chai-accent text-white py-4 rounded-xl font-bold text-lg hover:brightness-110 shadow-lg shadow-chai-accent/20"
                         th:text="#{auth.register.submit}">
                     Înregistrare
                 </button>
@@ -31,7 +48,7 @@
 
             <div class="mt-8 text-center text-sm">
                 <span class="text-chai-dark/60" th:text="#{auth.register.login_link}">Ai deja un cont?</span>
-                <a href="/login" class="text-chai-accent font-bold hover:underline ml-1">Autentifică-te</a>
+                <a href="/login" class="text-chai-accent font-bold hover:underline ml-1" th:text="#{auth.register.login_action}">Autentifică-te</a>
             </div>
         </div>
     </main>

@@ -4,159 +4,298 @@
 <body>
     <main class="py-8 px-4">
         <div class="max-w-7xl mx-auto">
-            
-            <!-- Header Arena -->
-            <div class="bg-white p-6 rounded-3xl border border-chai-dark/10 shadow-lg mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="bg-chai-accent text-white p-3 rounded-2xl shadow-lg shadow-chai-accent/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                        </svg>
+
+            <div id="waiting-overlay" class="fixed inset-0 bg-chai-dark/90 z-40 flex items-center justify-center flex-col text-white backdrop-blur-sm"
+                 th:classappend="${match.status != 'PENDING'} ? 'hidden' : ''">
+                <div class="w-16 h-16 border-4 border-white/20 border-t-chai-accent rounded-full animate-spin mb-8"></div>
+                <h2 class="text-3xl font-heading font-bold mb-3" th:text="#{arena.lobby.title}">Lobby deschis</h2>
+                <p class="text-white/70 text-center max-w-md px-4" th:text="#{arena.lobby.subtitle}">Trimite codul de mai jos. La 2v2 sunt necesari 4 jucători; meciul pornește când lobby-ul e plin.</p>
+                <p id="lobby-slots" class="mt-4 text-chai-accent font-bold text-lg"
+                   th:text="#{arena.lobby.players(${match.playersJoined}, ${match.requiredPlayers})}">Jucători: 1 / 2</p>
+                <div th:if="${match.joinCode != null}" class="mt-8 bg-white/10 px-8 py-6 rounded-2xl border border-white/20">
+                    <span class="block text-xs uppercase tracking-widest text-white/50 mb-2" th:text="#{arena.lobby.code}">Cod lobby</span>
+                    <span id="lobby-code-display" class="text-5xl font-heading font-black tracking-[0.25em] text-chai-accent"
+                          th:text="${match.joinCode}">ABC123</span>
+                    <button type="button" onclick="copyLobbyCode()"
+                            class="mt-4 text-sm text-white/80 hover:text-chai-accent underline" th:text="#{arena.lobby.copy}">Copiază codul</button>
+                </div>
+                <p class="mt-6 text-xs uppercase tracking-widest text-white/40" th:text="${match.topic}">Tema</p>
+                <a href="/dashboard" class="mt-10 text-sm text-chai-accent hover:underline" th:text="#{arena.lobby.back}">Înapoi la dashboard</a>
+            </div>
+
+            <div id="arena-content" th:classappend="${match.status == 'PENDING'} ? 'opacity-30 pointer-events-none' : ''">
+                <div class="bg-white p-6 rounded-3xl border border-chai-dark/10 shadow-lg mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-chai-accent text-white p-3 rounded-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-heading font-bold text-chai-text" th:text="${match.topic}">Tema</h2>
+                            <div class="flex gap-4 mt-1">
+                                <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50" th:text="${match.gameMode}">STANDARD</span>
+                                <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50" id="match-status"
+                                      th:text="#{arena.round(${match.roundNumber})}">
+                                    Runda 1 / 2
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-2xl font-heading font-bold text-chai-text" th:text="${match.topic}">Tema de Dezbatere</h2>
-                        <div class="flex gap-4 mt-1">
-                            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50 flex items-center gap-1">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                <span th:text="${match.gameMode}">STANDARD</span>
-                            </span>
-                            <span class="text-xs font-bold uppercase tracking-widest text-chai-dark/50" id="match-status">
-                                Runda <span th:text="${match.roundNumber}">1</span> / 2
-                            </span>
+                    <div class="flex gap-6">
+                        <div class="text-center">
+                            <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1" th:text="#{arena.timer.pro}">Timp PRO</span>
+                            <div id="timer-pro" class="text-3xl font-heading font-bold bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5">--:--</div>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1" th:text="#{arena.timer.contra}">Timp CONTRA</span>
+                            <div id="timer-contra" class="text-3xl font-heading font-bold bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5 opacity-50">--:--</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Global Timers -->
-                <div class="flex gap-6">
-                    <div class="text-center">
-                        <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1">Timp PRO</span>
-                        <div id="timer-pro" class="text-3xl font-heading font-bold text-chai-text bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5">00:00</div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
+                    <div id="panel-pro" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">P</div>
+                                <span id="label-pro" class="font-heading font-bold" th:text="#{arena.label.pro}">Jucător PRO</span>
+                            </div>
+                            <span id="typing-pro" class="text-xs italic text-chai-accent hidden" th:text="#{arena.typing}">Scrie...</span>
+                        </div>
+                        <div id="history-pro" class="space-y-2 mb-4 min-h-[280px] max-h-[400px] overflow-y-auto bg-chai-bg/40 rounded-2xl p-4 border border-chai-dark/5">
+                            <p class="text-xs text-chai-dark/40 italic" id="history-pro-empty" th:text="#{arena.history.empty}">Niciun argument încă.</p>
+                        </div>
+                        <div id="compose-pro" class="hidden">
+                            <label class="block text-xs font-bold uppercase text-chai-dark/50 mb-2" th:text="#{arena.argument.label}">Argumentul tău</label>
+                            <textarea id="text-pro"
+                                      class="w-full h-40 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 resize-none text-lg"
+                                      th:placeholder="#{arena.argument.placeholder}"></textarea>
+                            <button id="btn-submit-pro" class="mt-4 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold" th:text="#{arena.submit.pro}">Trimite PRO</button>
+                        </div>
+                        <div id="wait-pro" class="hidden p-6 bg-chai-bg rounded-2xl border border-chai-dark/10 text-center">
+                            <p class="wait-title text-sm font-semibold text-chai-text" th:text="#{arena.wait.title}">Așteaptă rândul adversarului...</p>
+                            <p class="text-xs text-chai-dark/50 mt-1" th:text="#{arena.wait.hint}">Istoricul de mai sus se actualizează live.</p>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <span class="block text-[10px] font-bold uppercase text-chai-dark/40 mb-1">Timp CONTRA</span>
-                        <div id="timer-contra" class="text-3xl font-heading font-bold text-chai-text bg-chai-bg px-4 py-2 rounded-xl border border-chai-dark/5 opacity-50">00:00</div>
+
+                    <div class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-chai-dark text-white rounded-full items-center justify-center font-heading font-black text-2xl border-4 border-chai-bg z-10" th:text="#{arena.vs}">VS</div>
+
+                    <div id="panel-contra" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">C</div>
+                                <span id="label-contra" class="font-heading font-bold" th:text="#{arena.label.contra}">Jucător CONTRA</span>
+                            </div>
+                            <span id="typing-contra" class="text-xs italic text-chai-accent hidden" th:text="#{arena.typing}">Scrie...</span>
+                        </div>
+                        <div id="history-contra" class="space-y-2 mb-4 min-h-[280px] max-h-[400px] overflow-y-auto bg-chai-bg/40 rounded-2xl p-4 border border-chai-dark/5">
+                            <p class="text-xs text-chai-dark/40 italic" id="history-contra-empty" th:text="#{arena.history.empty}">Niciun argument încă.</p>
+                        </div>
+                        <div id="compose-contra" class="hidden">
+                            <label class="block text-xs font-bold uppercase text-chai-dark/50 mb-2" th:text="#{arena.argument.label}">Argumentul tău</label>
+                            <textarea id="text-contra"
+                                      class="w-full h-40 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 resize-none text-lg"
+                                      th:placeholder="#{arena.argument.placeholder}"></textarea>
+                            <button id="btn-submit-contra" class="mt-4 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold" th:text="#{arena.submit.contra}">Trimite CONTRA</button>
+                        </div>
+                        <div id="wait-contra" class="hidden p-6 bg-chai-bg rounded-2xl border border-chai-dark/10 text-center">
+                            <p class="wait-title text-sm font-semibold text-chai-text" th:text="#{arena.wait.title}">Așteaptă rândul adversarului...</p>
+                            <p class="text-xs text-chai-dark/50 mt-1" th:text="#{arena.wait.hint}">Istoricul de mai sus se actualizează live.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Split Arena -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
-                
-                <!-- PRO SIDE -->
-                <div id="panel-pro" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all duration-500">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">P</div>
-                            <span id="label-pro" class="font-heading font-bold text-chai-text">Jucător PRO</span>
-                        </div>
-                        <span id="typing-pro" class="text-xs italic text-chai-accent hidden animate-bounce">Scrie...</span>
-                    </div>
-                    
-                    <textarea id="text-pro" 
-                              class="w-full h-64 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 focus:border-chai-accent focus:ring-4 focus:ring-chai-accent/5 outline-none transition-all resize-none text-lg leading-relaxed placeholder:text-chai-dark/20"
-                              placeholder="Introdu argumentul tău aici..." disabled></textarea>
-                    
-                    <button id="btn-submit-pro" class="mt-6 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold text-lg hover:brightness-110 disabled:grayscale disabled:opacity-50 transition-all shadow-lg shadow-chai-accent/20 hidden">
-                        Trimite Argument PRO
-                    </button>
-                </div>
-
-                <!-- VS Divider (Desktop Only) -->
-                <div class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-chai-dark text-white rounded-full items-center justify-center font-heading font-black text-2xl border-4 border-chai-bg z-20 shadow-xl">
-                    VS
-                </div>
-
-                <!-- CONTRA SIDE -->
-                <div id="panel-contra" class="bg-white p-8 rounded-[2.5rem] border-2 border-chai-dark/10 shadow-xl transition-all duration-500 opacity-50">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-chai-dark text-white rounded-full flex items-center justify-center font-bold">C</div>
-                            <span id="label-contra" class="font-heading font-bold text-chai-text">Jucător CONTRA</span>
-                        </div>
-                        <span id="typing-contra" class="text-xs italic text-chai-accent hidden animate-bounce">Scrie...</span>
-                    </div>
-
-                    <textarea id="text-contra" 
-                              class="w-full h-64 p-6 bg-chai-bg/30 rounded-3xl border border-chai-dark/10 focus:border-chai-accent focus:ring-4 focus:ring-chai-accent/5 outline-none transition-all resize-none text-lg leading-relaxed placeholder:text-chai-dark/20"
-                              placeholder="Așteaptă rândul tău..." disabled></textarea>
-
-                    <button id="btn-submit-contra" class="mt-6 w-full bg-chai-accent text-white py-4 rounded-2xl font-bold text-lg hover:brightness-110 disabled:grayscale disabled:opacity-50 transition-all shadow-lg shadow-chai-accent/20 hidden">
-                        Trimite Argument CONTRA
-                    </button>
-                </div>
+            <div id="ai-overlay" class="fixed inset-0 bg-chai-dark/95 z-50 flex items-center justify-center flex-col text-white hidden">
+                <div class="w-24 h-24 border-4 border-white/10 border-t-chai-accent rounded-full animate-spin mb-8"></div>
+                <h2 class="text-3xl font-heading font-bold mb-3" th:text="#{arena.ai.title}">Arbitrul AI analizează meciul...</h2>
+                <p class="text-white/70" th:text="#{arena.ai.subtitle}">Se calculează scorurile și ELO-ul.</p>
             </div>
-
-            <!-- AI processing Overlay -->
-            <div id="ai-overlay" class="fixed inset-0 bg-chai-dark/95 z-50 flex items-center justify-center flex-col text-white hidden backdrop-blur-md">
-                <div class="relative w-40 h-40 mb-10">
-                    <div class="absolute inset-0 border-8 border-white/10 rounded-full"></div>
-                    <div class="absolute inset-0 border-8 border-t-chai-accent rounded-full animate-spin"></div>
-                </div>
-                <h2 class="text-4xl font-heading font-bold mb-4">Arbitrul AI analizează logica meciului...</h2>
-                <p class="text-white/70 text-xl font-body">Se caută erori logice și se calculează noul tău ELO.</p>
-            </div>
-
         </div>
     </main>
 
-    <!-- Scripts -->
     <th:block th:fragment="scripts">
         <script th:inline="javascript">
-            /*<![CDATA[*/
-            // Facem variabilele globale pentru debugging
+            window.i18n = {
+                players: /*[[#{js.arena.players('{0}', '{1}')}]]*/ '',
+                round: /*[[#{js.arena.round('{0}')}]]*/ '',
+                roundLabel: /*[[#{js.arena.roundLabel('{0}')}]]*/ '',
+                waitTitle: /*[[#{arena.wait.title}]]*/ '',
+                waitTeam: /*[[#{arena.wait.team('{0}')}]]*/ '',
+                youPro: /*[[#{arena.you.pro}]]*/ '',
+                youContra: /*[[#{arena.you.contra}]]*/ '',
+                labelPro: /*[[#{arena.label.pro}]]*/ '',
+                labelContra: /*[[#{arena.label.contra}]]*/ '',
+                historyEmpty: /*[[#{arena.history.empty}]]*/ ''
+            };
             window.matchId = [[${match.id}]];
             window.currentUserId = [[${currentUserId}]];
             window.proUserId = [[${match.proUserId}]];
+            window.proUser2Id = [[${match.proUser2Id}]];
             window.contraUserId = [[${match.contraUserId}]];
+            window.contraUser2Id = [[${match.contraUser2Id}]];
+            window.currentTurnUserId = [[${match.currentTurnUserId}]];
+            window.requiredPlayers = [[${match.requiredPlayers}]];
+            window.playersJoined = [[${match.playersJoined}]];
+            window.matchStatus = [[${match.status}]];
+            window.lobbyJoinCode = /*[[${match.joinCode}]]*/ '';
             const initialTurnTime = [[${match.initialTime}]];
-            
+            const currentUsername = [[${currentUsername}]];
+
             let stompClient = null;
-            window.currentTurn = [[${match.currentTurn}]]; 
+            window.currentTurn = [[${match.currentTurn}]];
             window.roundNumber = [[${match.roundNumber}]];
             let timerInterval = null;
             let timeLeft = initialTurnTime;
             let typingTimeout = null;
+            let gameStarted = false;
+
+            function copyLobbyCode() {
+                const code = document.getElementById('lobby-code-display')?.innerText || window.lobbyJoinCode;
+                if (code && navigator.clipboard) {
+                    navigator.clipboard.writeText(code.trim());
+                }
+            }
+
+            function isProTeam(uid) {
+                return uid === window.proUserId || uid === window.proUser2Id;
+            }
+            function isContraTeam(uid) {
+                return uid === window.contraUserId || uid === window.contraUser2Id;
+            }
+            function isProTurnLabel(turn) {
+                return turn === 'PRO' || turn === 'PRO2';
+            }
 
             function connect() {
-                console.log("Arena Init - IDs:", { current: window.currentUserId, pro: window.proUserId, contra: window.contraUserId });
-
-                // Identificare rol IMEDIATĂ
-                if (window.currentUserId === window.proUserId) {
-                    document.getElementById('label-pro').innerText = "TU (PRO)";
-                } else if (window.currentUserId === window.contraUserId) {
-                    document.getElementById('label-contra').innerText = "TU (CONTRA)";
+                if (isProTeam(window.currentUserId)) {
+                    document.getElementById('label-pro').innerText = window.i18n.youPro;
+                } else if (isContraTeam(window.currentUserId)) {
+                    document.getElementById('label-contra').innerText = window.i18n.youContra;
                 }
-
-                updateTurnUI(); 
-                startTimer();
 
                 const socket = new SockJS('/ws-arena');
                 stompClient = Stomp.over(socket);
+                stompClient.debug = () => {};
 
-                stompClient.connect({}, function (frame) {
-                    console.log('Conectat la WebSocket');
-                    stompClient.subscribe('/topic/match/' + window.matchId, function (event) {
-                        handleGameEvent(JSON.parse(event.body));
-                    });
-                }, function(error) {
-                    console.error('Eroare conexiune WebSocket:', error);
+                stompClient.connect({}, function () {
+                    stompClient.subscribe('/topic/match/' + window.matchId, handleGameEvent);
+                    if (window.matchStatus === 'ACTIVE') {
+                        beginGame();
+                    } else {
+                        pollMatchStatus();
+                    }
+                }, function (err) {
+                    console.error('WebSocket:', err);
+                    pollMatchStatus();
                 });
             }
 
-            function handleGameEvent(event) {
-                console.log("Eveniment:", event.type, event);
-                switch(event.type) {
+            function pollMatchStatus() {
+                const poll = async () => {
+                    try {
+                        const res = await fetch('/api/matches/' + window.matchId, { credentials: 'same-origin' });
+                        if (!res.ok) return;
+                        const match = await res.json();
+                        window.contraUserId = match.contraUserId;
+                        window.playersJoined = match.playersJoined;
+                        window.requiredPlayers = match.requiredPlayers;
+                        const slots = document.getElementById('lobby-slots');
+                        if (slots) slots.innerText = window.i18n.players
+                            .replace('{0}', match.playersJoined)
+                            .replace('{1}', match.requiredPlayers);
+                        if (match.status === 'ACTIVE' && match.playersJoined >= match.requiredPlayers) {
+                            beginGame();
+                            return;
+                        }
+                        if (match.status === 'FINISHED') {
+                            window.location.href = '/arena/' + window.matchId + '/results';
+                        }
+                    } catch (e) { /* retry */ }
+                };
+                poll();
+                setInterval(poll, 2500);
+            }
+
+            function escapeHtml(text) {
+                const d = document.createElement('div');
+                d.textContent = text;
+                return d.innerHTML;
+            }
+
+            function renderArguments(args) {
+                ['pro', 'contra'].forEach(side => {
+                    const container = document.getElementById('history-' + side);
+                    const empty = document.getElementById('history-' + side + '-empty');
+                    const sideKey = side.toUpperCase();
+                    const items = (args || []).filter(a => a.side === sideKey);
+                    container.querySelectorAll('.arg-card').forEach(el => el.remove());
+                    if (items.length === 0) {
+                        if (empty) empty.classList.remove('hidden');
+                    } else {
+                        if (empty) empty.classList.add('hidden');
+                        items.forEach(a => {
+                            const div = document.createElement('div');
+                            div.className = 'arg-card p-4 bg-chai-bg/60 rounded-2xl border border-chai-dark/10';
+                            const author = a.author ? ' · ' + escapeHtml(a.author) : '';
+                            div.innerHTML = '<span class="text-[10px] font-bold uppercase text-chai-accent">'
+                                + window.i18n.roundLabel.replace('{0}', a.roundNumber) + author + '</span>'
+                                + '<p class="mt-2 text-chai-text leading-relaxed">' + escapeHtml(a.textContent) + '</p>';
+                            container.appendChild(div);
+                        });
+                    }
+                });
+            }
+
+            async function refreshMatchState() {
+                try {
+                    const res = await fetch('/api/matches/' + window.matchId, { credentials: 'same-origin' });
+                    if (!res.ok) return;
+                    const match = await res.json();
+                    if (match.arguments) renderArguments(match.arguments);
+                    if (match.currentTurn) window.currentTurn = match.currentTurn;
+                    if (match.currentTurnUserId) window.currentTurnUserId = match.currentTurnUserId;
+                    if (match.roundNumber) window.roundNumber = match.roundNumber;
+                } catch (e) { console.warn('refresh match', e); }
+            }
+
+            function beginGame() {
+                if (gameStarted) return;
+                gameStarted = true;
+                document.getElementById('waiting-overlay').classList.add('hidden');
+                document.getElementById('arena-content').classList.remove('opacity-30', 'pointer-events-none');
+                if (window.currentTurn === 'NONE' || !window.currentTurn) {
+                    window.currentTurn = 'PRO';
+                    window.roundNumber = 1;
+                }
+                refreshMatchState().then(() => {
+                    updateTurnUI();
+                    startTimer();
+                });
+            }
+
+            function handleGameEvent(message) {
+                const event = JSON.parse(message.body);
+                switch (event.type) {
                     case 'START':
-                        window.currentTurn = 'PRO';
-                        window.roundNumber = 1;
-                        updateTurnUI();
-                        resetTimer();
+                        if (event.payload) {
+                            window.contraUserId = event.payload.contraUserId;
+                            window.proUser2Id = event.payload.proUser2Id;
+                            window.contraUser2Id = event.payload.contraUser2Id;
+                            window.currentTurnUserId = event.payload.currentTurnUserId;
+                            window.currentTurn = event.payload.currentTurn || 'PRO';
+                            window.roundNumber = event.payload.roundNumber || 1;
+                        }
+                        beginGame();
                         break;
                     case 'TURN_CHANGE':
                         window.currentTurn = event.payload.currentTurn;
+                        window.currentTurnUserId = event.payload.currentTurnUserId;
                         window.roundNumber = event.payload.roundNumber;
-                        document.getElementById('match-status').innerText = `Runda ${window.roundNumber} / 2`;
+                        document.getElementById('match-status').innerText = window.i18n.round.replace('{0}', window.roundNumber);
+                        if (event.payload.arguments) renderArguments(event.payload.arguments);
+                        else refreshMatchState();
                         updateTurnUI();
                         resetTimer();
                         break;
@@ -164,114 +303,88 @@
                         showTyping(event.senderUsername);
                         break;
                     case 'PROCESSING_AI':
-                        window.currentTurn = event.payload.currentTurn;
                         document.getElementById('ai-overlay').classList.remove('hidden');
                         stopTimer();
                         break;
                     case 'FINISHED':
-                        console.log("Meci finalizat. Redirecționare...");
-                        // Redirecționare imediată către pagina de rezultate
                         window.location.href = '/arena/' + window.matchId + '/results';
                         break;
                 }
             }
 
+            function mySide() {
+                return isProTeam(window.currentUserId) ? 'pro' : 'contra';
+            }
+
             function updateTurnUI() {
-                const isMyTurn = (window.currentTurn === 'PRO' && window.currentUserId === window.proUserId) || 
-                                 (window.currentTurn === 'CONTRA' && window.currentUserId === window.contraUserId);
-                
-                const activeSide = window.currentTurn.toLowerCase();
-                const inactiveSide = activeSide === 'pro' ? 'contra' : 'pro';
-                
-                console.log("Updating UI for turn:", window.currentTurn, "Is my turn:", isMyTurn);
+                const proTurn = isProTurnLabel(window.currentTurn);
+                const activeSide = proTurn ? 'pro' : 'contra';
+                const activeTeam = proTurn ? 'PRO' : 'CONTRA';
+                const isMyTurn = window.currentTurnUserId === window.currentUserId;
+                const my = mySide();
 
-                // Reset UI for both sides
                 ['pro', 'contra'].forEach(side => {
-                    const textEl = document.getElementById('text-' + side);
-                    const btnEl = document.getElementById('btn-submit-' + side);
-                    const panelEl = document.getElementById('panel-' + side);
-                    const timerEl = document.getElementById('timer-' + side);
-
-                    textEl.disabled = true;
-                    btnEl.classList.add('hidden');
-                    btnEl.disabled = false; // Reset disabled state (the grey button fix)
-                    btnEl.innerText = "Trimite Argument " + side.toUpperCase();
-                    panelEl.classList.add('opacity-50');
-                    timerEl.classList.add('opacity-50');
+                    document.getElementById('compose-' + side).classList.add('hidden');
+                    document.getElementById('wait-' + side).classList.add('hidden');
+                    document.getElementById('panel-' + side).classList.remove('ring-4', 'ring-chai-accent/30');
+                    document.getElementById('timer-' + side).classList.add('opacity-50');
                 });
 
-                // Activate current side panel and timer
-                document.getElementById('panel-' + activeSide).classList.remove('opacity-50');
+                document.getElementById('panel-' + activeSide).classList.add('ring-4', 'ring-chai-accent/30');
                 document.getElementById('timer-' + activeSide).classList.remove('opacity-50');
-                
-                const activeText = document.getElementById('text-' + activeSide);
-                const activeBtn = document.getElementById('btn-submit-' + activeSide);
 
                 if (isMyTurn) {
+                    document.getElementById('compose-' + my).classList.remove('hidden');
+                    const activeText = document.getElementById('text-' + my);
+                    const activeBtn = document.getElementById('btn-submit-' + my);
                     activeText.disabled = false;
-                    activeText.placeholder = "Introdu argumentul tău aici...";
-                    activeBtn.classList.remove('hidden');
                     activeBtn.disabled = false;
-                    
-                    activeText.oninput = () => {
-                        sendTyping();
-                    };
+                    activeText.oninput = sendTyping;
                 } else {
-                    activeText.placeholder = "Așteaptă rândul oponentului...";
-                    activeText.oninput = null;
+                    const waitBox = document.getElementById('wait-' + my);
+                    const title = waitBox.querySelector('.wait-title');
+                    if (title) {
+                        title.textContent = window.i18n.waitTeam.replace('{0}', activeTeam);
+                    }
+                    waitBox.classList.remove('hidden');
                 }
             }
 
             function sendTyping() {
                 if (stompClient && stompClient.connected) {
-                    stompClient.send("/app/match/" + window.matchId + "/action", {}, JSON.stringify({
-                        type: 'TYPING',
-                        payload: 'Typing...'
-                    }));
+                    stompClient.send('/app/match/' + window.matchId + '/action', {}, JSON.stringify({ type: 'TYPING', payload: '.' }));
                 }
             }
 
             function showTyping(username) {
-                // Nu afișăm pentru noi înșine
-                if (username === [[${currentUsername}]]) return;
-                
+                if (username === currentUsername) return;
                 const side = window.currentTurn.toLowerCase();
                 const el = document.getElementById('typing-' + side);
                 el.classList.remove('hidden');
-                
                 clearTimeout(typingTimeout);
-                typingTimeout = setTimeout(() => {
-                    el.classList.add('hidden');
-                }, 2000);
+                typingTimeout = setTimeout(() => el.classList.add('hidden'), 2000);
             }
 
             function submitArgument() {
-                const side = window.currentTurn.toLowerCase();
-                const text = document.getElementById('text-' + side).value;
-
-                if (!text.trim()) return;
-
-                if (stompClient && stompClient.connected) {
-                    stompClient.send("/app/match/" + window.matchId + "/action", {}, JSON.stringify({
-                        type: 'SUBMIT',
-                        payload: text
-                    }));
-                    document.getElementById('text-' + side).value = '';
-                    document.getElementById('btn-submit-' + side).disabled = true;
-                    document.getElementById('btn-submit-' + side).innerText = "Se trimite...";
-                }
+                const proTurn = isProTurnLabel(window.currentTurn);
+                const side = proTurn ? 'pro' : 'contra';
+                const text = document.getElementById('text-' + side).value.trim();
+                if (!text || !stompClient || !stompClient.connected) return;
+                stompClient.send('/app/match/' + window.matchId + '/action', {}, JSON.stringify({ type: 'SUBMIT', payload: text }));
+                document.getElementById('text-' + side).value = '';
+                document.getElementById('btn-submit-' + side).disabled = true;
+                document.getElementById('compose-' + side).classList.add('hidden');
+                document.getElementById('wait-' + side).classList.remove('hidden');
             }
 
-            // Timer Logic
             function startTimer() {
                 stopTimer();
+                timeLeft = initialTurnTime;
+                updateTimerDisplay();
                 timerInterval = setInterval(() => {
                     timeLeft--;
                     updateTimerDisplay();
-                    if (timeLeft <= 0) {
-                        stopTimer();
-                        // Opțional: auto-submit? 
-                    }
+                    if (timeLeft <= 0) stopTimer();
                 }, 1000);
             }
 
@@ -286,19 +399,15 @@
             }
 
             function updateTimerDisplay() {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                const activeSide = window.currentTurn.toLowerCase();
-                document.getElementById('timer-' + activeSide).innerText = timeStr;
-                
-                // Reset the other timer to static 00:00 or current state
-                const inactiveSide = activeSide === 'pro' ? 'contra' : 'pro';
-                document.getElementById('timer-' + inactiveSide).innerText = "00:00";
+                const m = Math.floor(timeLeft / 60);
+                const s = timeLeft % 60;
+                const str = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                const active = isProTurnLabel(window.currentTurn) ? 'pro' : 'contra';
+                document.getElementById('timer-' + active).innerText = str;
+                const inactive = active === 'pro' ? 'contra' : 'pro';
+                document.getElementById('timer-' + inactive).innerText = '--:--';
             }
 
-            // Bind events
             document.getElementById('btn-submit-pro').onclick = submitArgument;
             document.getElementById('btn-submit-contra').onclick = submitArgument;
 
@@ -307,7 +416,6 @@
             } else {
                 connect();
             }
-            /*]]>*/
         </script>
     </th:block>
 </body>

@@ -1,9 +1,11 @@
 package com.ArguMind.ArguMind.model;
 
 public enum GameMode {
-    BLITZ(120), // 2 minute
-    RAPID(300), // 5 minute
-    STANDARD(600); // 10 minute
+    BLITZ(120),
+    RAPID(300),
+    STANDARD(600),
+    EXTENDED(900),
+    TEAMS_2V2(420);
 
     private final int turnTimeSeconds;
 
@@ -13,5 +15,13 @@ public enum GameMode {
 
     public int getTurnTimeSeconds() {
         return turnTimeSeconds;
+    }
+
+    public int getRequiredPlayers() {
+        return this == TEAMS_2V2 ? 4 : 2;
+    }
+
+    public int getTotalArguments() {
+        return this == TEAMS_2V2 ? 4 : 4;
     }
 }

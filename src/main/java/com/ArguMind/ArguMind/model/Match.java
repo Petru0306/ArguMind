@@ -2,6 +2,9 @@ package com.ArguMind.ArguMind.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "matches")
@@ -22,6 +25,20 @@ public class Match {
     @Builder.Default
     private String status = "PENDING";
 
+    @Column(name = "join_code", unique = true, length = 8)
+    private String joinCode;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
+
+    @PrePersist
+    void ensureCreatedAt() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "game_mode")
     @Builder.Default
@@ -34,6 +51,14 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "contra_user_id")
     private User contraUser;
+
+    @ManyToOne
+    @JoinColumn(name = "pro_user2_id")
+    private User proUser2;
+
+    @ManyToOne
+    @JoinColumn(name = "contra_user2_id")
+    private User contraUser2;
 
     @ManyToOne
     @JoinColumn(name = "winner_id")

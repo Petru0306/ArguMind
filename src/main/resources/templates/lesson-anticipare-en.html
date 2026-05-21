@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: main-layout(~{::main}, ~{})}">
+<body>
+<main class="py-10 px-4 pb-20">
+    <article class="max-w-3xl mx-auto">
+        <a href="/lessons" class="text-sm font-bold text-chai-accent hover:underline mb-6 inline-block">← All lessons</a>
+
+        <header class="bg-chai-dark text-white rounded-3xl p-8 md:p-12 mb-10 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-chai-accent">Lesson 3</span>
+            <h1 class="text-3xl md:text-4xl font-heading font-bold mt-3 leading-tight">
+                Think like your opponent: anticipation in 2 minutes
+            </h1>
+            <p class="text-white/75 mt-4 text-lg leading-relaxed">
+                Good debaters are not “smarter” — they are better prepared. Before you speak, imagine what the other side would say and prepare your response.
+            </p>
+        </header>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">1. Map of the 3 likely attacks</h2>
+            <p class="text-sm text-chai-dark/85 leading-relaxed mb-4">
+                For any topic, your opponent will usually use one of these strategies:
+            </p>
+            <ul class="text-sm space-y-2 list-disc list-inside text-chai-dark/85">
+                <li><strong>Premise attack</strong> — “your data is outdated / incomplete”</li>
+                <li><strong>Relevance attack</strong> — “your example is isolated, not the rule”</li>
+                <li><strong>Cost attack</strong> — “your solution is too expensive / dangerous / slow”</li>
+            </ul>
+            <div class="mt-6 p-4 bg-chai-bg rounded-xl border-l-4 border-chai-accent">
+                <p class="text-sm font-semibold text-chai-text">ArguMind tip</p>
+                <p class="text-sm text-chai-dark/70 mt-1">Write down 3 sentences you would use if you were on the opposing team — then respond to each in 2 sentences.</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">2. The “Steelman” technique (opposite of strawman)</h2>
+            <div class="space-y-4 text-chai-dark/85 leading-relaxed text-sm">
+                <p><strong>Strawman</strong> — you build a weak opponent to beat easily. Judges and AI notice.</p>
+                <p><strong>Steelman</strong> — you formulate the strongest version of the opposing argument, then show why your position is still superior. That earns respect and logic points.</p>
+            </div>
+            <div class="mt-4 p-5 bg-chai-dark/5 rounded-xl text-sm">
+                <p class="font-bold text-chai-text mb-2">Example (topic: nuclear energy)</p>
+                <p class="text-chai-dark/75 italic">“Even if nuclear is efficient, accident risk and waste storage for generations are serious arguments — and they deserve a response, not silence.”</p>
+            </div>
+        </section>
+
+        <section class="lesson-block bg-white rounded-2xl border border-chai-dark/10 p-8 mb-6 shadow-md hover-card">
+            <h2 class="text-xl font-heading font-bold text-chai-accent mb-4">3. The 2-minute pre-match pack</h2>
+            <ol class="space-y-3 text-sm text-chai-dark/85 list-decimal list-inside">
+                <li>Write your position in <strong>max 12 words</strong>.</li>
+                <li>List <strong>2 arguments</strong> + one piece of evidence for each.</li>
+                <li>Write <strong>1 counter-argument</strong> you expect and your short response.</li>
+                <li>Choose <strong>1 memorable closing line</strong> (without exaggerated emotion).</li>
+            </ol>
+        </section>
+
+        <section class="bg-chai-accent/10 rounded-2xl border border-chai-accent/30 p-8 text-center">
+            <h2 class="text-xl font-heading font-bold text-chai-text mb-3">Simulate your opponent</h2>
+            <p class="text-sm text-chai-dark/70 mb-6">“Devil's Advocate” mode in AI Debate forces you to answer tough counter-arguments.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/ai-debate" sec:authorize="isAuthenticated()"
+                   class="bg-chai-accent text-white px-6 py-3 rounded-xl font-bold btn-glow">AI Debate</a>
+                <a href="/topics" class="bg-white border border-chai-dark/20 px-6 py-3 rounded-xl font-bold hover:border-chai-accent">Pick a topic</a>
+            </div>
+        </section>
+    </article>
+</main>
+</body>
+</html>
